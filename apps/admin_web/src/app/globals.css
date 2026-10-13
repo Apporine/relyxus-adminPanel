@@ -1,6 +1,190 @@
 @import "tailwindcss";
 
-body {
-  background: #fcfaff;
-  color: #110a24;
+/*
+ * Apporine design tokens (spec §6). The five brand colors are used exactly as specified.
+ * Neutrals are mixed from Ink into Canvas. The *-text tones are darker shades used only
+ * when Violet, Cyan or Coral must be read as text on Canvas, keeping 4.5:1 contrast.
+ */
+:root {
+  /* Brand palette */
+  --ap-ink: #110a24;
+  --ap-canvas: #fcfaff;
+  --ap-violet: #7040ff;
+  --ap-cyan: #05dce8;
+  --ap-coral: #ff694d;
+
+  /* Surfaces */
+  --ap-surface: #ffffff;
+  --ap-surface-sunken: #f3f0f6;
+  --ap-surface-hover: #f6f3fa;
+  --ap-surface-selected: #eee7ff;
+
+  /* Text on light surfaces (contrast against Canvas) */
+  --ap-fg: var(--ap-ink); /* 18.5:1 */
+  --ap-fg-secondary: #4c465b; /* 8.7:1 */
+  --ap-fg-muted: #635e71; /* 6.0:1 */
+  --ap-fg-disabled: #928e9c;
+
+  /* Lines */
+  --ap-border: #e9e7ed;
+  --ap-border-strong: #d9d6de;
+  --ap-border-control: #928e9c; /* 3:1 non-text contrast for inputs */
+
+  /* Semantic emphasis */
+  --ap-violet-hover: #6238de;
+  --ap-violet-text: #6238de; /* 6.5:1 */
+  --ap-violet-subtle: #eee7ff;
+  --ap-cyan-text: #0b7386; /* 5.3:1 */
+  --ap-cyan-subtle: #d7f6fc;
+  --ap-coral-text: #a8453c; /* 5.7:1 on Canvas, 5.0:1 on coral-subtle */
+  --ap-coral-subtle: #fce9ea;
+
+  /* Ink navigation surface */
+  --ap-nav: var(--ap-ink);
+  --ap-nav-raised: #1d1533;
+  --ap-nav-active: #2a2047;
+  --ap-nav-fg: var(--ap-canvas);
+  --ap-nav-fg-muted: #b5b2bd; /* 9.2:1 on Ink */
+  --ap-nav-border: #2a2340;
+
+  /* Layout (spec §6.2) */
+  --ap-sidebar-width: 248px;
+  --ap-sidebar-collapsed-width: 72px;
+  --ap-topbar-height: 56px;
+  --ap-content-max-width: 1680px;
+
+  /* Density: tables and dense lists */
+  --ap-row-height: 2.5rem;
+
+  /* Motion */
+  --ap-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ap-duration-fast: 120ms;
+  --ap-duration-panel: 200ms;
+}
+
+[data-density="compact"] {
+  --ap-row-height: 2rem;
+}
+
+@theme inline {
+  --color-ink: var(--ap-ink);
+  --color-canvas: var(--ap-canvas);
+  --color-violet: var(--ap-violet);
+  --color-cyan: var(--ap-cyan);
+  --color-coral: var(--ap-coral);
+
+  --color-surface: var(--ap-surface);
+  --color-surface-sunken: var(--ap-surface-sunken);
+  --color-surface-hover: var(--ap-surface-hover);
+  --color-surface-selected: var(--ap-surface-selected);
+
+  --color-fg: var(--ap-fg);
+  --color-fg-secondary: var(--ap-fg-secondary);
+  --color-fg-muted: var(--ap-fg-muted);
+  --color-fg-disabled: var(--ap-fg-disabled);
+
+  --color-border: var(--ap-border);
+  --color-border-strong: var(--ap-border-strong);
+  --color-border-control: var(--ap-border-control);
+
+  --color-violet-hover: var(--ap-violet-hover);
+  --color-violet-text: var(--ap-violet-text);
+  --color-violet-subtle: var(--ap-violet-subtle);
+  --color-cyan-text: var(--ap-cyan-text);
+  --color-cyan-subtle: var(--ap-cyan-subtle);
+  --color-coral-text: var(--ap-coral-text);
+  --color-coral-subtle: var(--ap-coral-subtle);
+
+  --color-nav: var(--ap-nav);
+  --color-nav-raised: var(--ap-nav-raised);
+  --color-nav-active: var(--ap-nav-active);
+  --color-nav-fg: var(--ap-nav-fg);
+  --color-nav-fg-muted: var(--ap-nav-fg-muted);
+  --color-nav-border: var(--ap-nav-border);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Typography scale (spec §6.1) */
+  --text-page-title: 1.5rem;
+  --text-page-title--line-height: 2rem;
+  --text-page-title--font-weight: 600;
+  --text-section-title: 1.125rem;
+  --text-section-title--line-height: 1.625rem;
+  --text-section-title--font-weight: 600;
+  --text-card-title: 0.875rem;
+  --text-card-title--line-height: 1.25rem;
+  --text-card-title--font-weight: 600;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25rem;
+  --text-dense: 0.8125rem;
+  --text-dense--line-height: 1.125rem;
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.125rem;
+  --text-metric: 1.75rem;
+  --text-metric--line-height: 2.125rem;
+  --text-metric--font-weight: 600;
+
+  --radius-control: 6px;
+  --radius-card: 10px;
+  --radius-dialog: 12px;
+
+  --shadow-card: 0 1px 2px rgb(17 10 36 / 0.04);
+  --shadow-overlay: 0 12px 32px -8px rgb(17 10 36 / 0.22), 0 2px 6px rgb(17 10 36 / 0.08);
+
+  --ease-standard: var(--ap-ease-standard);
+
+  --spacing-sidebar: var(--ap-sidebar-width);
+  --spacing-sidebar-collapsed: var(--ap-sidebar-collapsed-width);
+  --spacing-topbar: var(--ap-topbar-height);
+  --spacing-row: var(--ap-row-height);
+
+  /* Stacking layers */
+  --z-sticky: 10;
+  --z-nav: 20;
+  --z-drawer: 40;
+  --z-dialog: 50;
+  --z-toast: 60;
+  --z-palette: 70;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-body text-fg;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /*
+   * Focus (spec §32): 2 px Accent Cyan outer ring around a 2 px Ink outline. The Ink
+   * outline carries contrast on Canvas; the Cyan ring carries it on Ink surfaces.
+   */
+  :focus-visible {
+    outline: 2px solid var(--ap-ink);
+    outline-offset: 0;
+    box-shadow: 0 0 0 4px var(--ap-cyan);
+  }
+
+  ::selection {
+    background: var(--ap-violet-subtle);
+    color: var(--ap-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }
