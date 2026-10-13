@@ -122,7 +122,71 @@ export const products: Product[] = [
   },
 ];
 
+type Compatibility = Release["compatibility"];
+
+const fullySupported = (kubernetes: string): Compatibility => ({
+  eks: { status: "supported", kubernetes },
+  aks: { status: "supported", kubernetes },
+  gke: { status: "supported", kubernetes },
+  openshift: { status: "supported", kubernetes: "OpenShift 4.14 – 4.16" },
+  rke2: { status: "supported", kubernetes },
+});
+
+const passed = (...names: string[]): Release["gates"] =>
+  names.map((name) => ({ name, status: "passed" }));
+
+const standardGates = passed(
+  "Unit and integration tests",
+  "Conformance on EKS, AKS and GKE",
+  "Conformance on OpenShift",
+  "Upgrade test from previous minor",
+  "Security scan with no critical findings",
+  "Release approval",
+);
+
+const relyxusDependencies = (postgres: string) => [
+  { name: "PostgreSQL", versions: postgres },
+  { name: "Helm", versions: "3.14 or later" },
+  { name: "cert-manager", versions: "1.14 or later" },
+];
+
 export const releases: Release[] = [
+  {
+    id: "rel_2_5_0",
+    productId: "prd_relyxus",
+    version: "2.5.0",
+    status: "tested",
+    ociDigest: "sha256:7c1e3a5f9b2d4c6e8a0f1b3d5c7e9a2b4d6f8c0e1a3b5d7f9c2e4a6b8d0f1c3e",
+    helmChartVersion: "2.5.0",
+    minUpgradeFrom: "2.3.0",
+    sbomRef: "sbom/relyxus-2.5.0.spdx.json",
+    signed: true,
+    provenance: true,
+    gates: [
+      ...passed(
+        "Unit and integration tests",
+        "Conformance on EKS, AKS and GKE",
+        "Security scan with no critical findings",
+      ),
+      { name: "Conformance on OpenShift", status: "failed" },
+      { name: "Upgrade test from previous minor", status: "pending" },
+      { name: "Release approval", status: "pending" },
+    ],
+    compatibility: {
+      ...fullySupported("1.30 – 1.32"),
+      openshift: {
+        status: "unsupported",
+        kubernetes: "OpenShift 4.15 – 4.16",
+        note: "Conformance failed: operator needs a privileged SCC. Fix in progress.",
+      },
+    },
+    dependencies: relyxusDependencies("15 – 17"),
+    notes: [
+      "Ledger reconciliation runs incrementally",
+      "PostgreSQL 17 support",
+      "Drops Kubernetes 1.29",
+    ],
+  },
   {
     id: "rel_2_4_1",
     productId: "prd_relyxus",
@@ -132,6 +196,21 @@ export const releases: Release[] = [
     endOfSupportAt: "2027-09-30T00:00:00Z",
     ociDigest: "sha256:4b1e9c07d2a35f8e61c0a9b7d34e2f1a8c5b6d0e9f7a3c2b1d4e6f8a0b9c7d5e",
     helmChartVersion: "2.4.1",
+    minUpgradeFrom: "2.2.0",
+    sbomRef: "sbom/relyxus-2.4.1.spdx.json",
+    signed: true,
+    provenance: true,
+    gates: standardGates,
+    compatibility: {
+      ...fullySupported("1.29 – 1.31"),
+      openshift: {
+        status: "conditional",
+        kubernetes: "OpenShift 4.14 – 4.16",
+        note: "Requires the restricted-v2 SCC profile and a reviewed network policy.",
+      },
+    },
+    dependencies: relyxusDependencies("14 – 16"),
+    notes: ["Fixes license refresh retry storm", "Faster offline artifact import"],
   },
   {
     id: "rel_2_4_0",
@@ -142,6 +221,14 @@ export const releases: Release[] = [
     endOfSupportAt: "2027-08-31T00:00:00Z",
     ociDigest: "sha256:9f2c4e1b7a3d5c8e0f6a2b9d1c7e3f5a8b0d4c6e2f9a1b3d5c7e0f8a2b4d6c9e",
     helmChartVersion: "2.4.0",
+    minUpgradeFrom: "2.2.0",
+    sbomRef: "sbom/relyxus-2.4.0.spdx.json",
+    signed: true,
+    provenance: true,
+    gates: standardGates,
+    compatibility: fullySupported("1.29 – 1.31"),
+    dependencies: relyxusDependencies("14 – 16"),
+    notes: ["Multi-region DR profile", "Entitlement drift reporting"],
   },
   {
     id: "rel_2_3_1",
@@ -152,6 +239,14 @@ export const releases: Release[] = [
     endOfSupportAt: "2027-02-28T00:00:00Z",
     ociDigest: "sha256:1a7d3f9c5e2b8a0d6c4f1e9b7a3d5c2e8f0a6b4d1c9e7f3a5b2d8c0e6f4a1b9d",
     helmChartVersion: "2.3.1",
+    minUpgradeFrom: "2.1.0",
+    sbomRef: "sbom/relyxus-2.3.1.spdx.json",
+    signed: true,
+    provenance: true,
+    gates: standardGates,
+    compatibility: fullySupported("1.28 – 1.30"),
+    dependencies: relyxusDependencies("13 – 16"),
+    notes: ["Offline license packages", "Audit export to object storage"],
   },
   {
     id: "rel_2_2_4",
@@ -162,6 +257,16 @@ export const releases: Release[] = [
     endOfSupportAt: "2026-11-30T00:00:00Z",
     ociDigest: "sha256:c3e5a7b9d1f2e4c6a8b0d2f4e6a8c0b2d4f6e8a0c2b4d6f8e0a2c4b6d8f0e2a4",
     helmChartVersion: "2.2.4",
+    minUpgradeFrom: "2.0.0",
+    signed: true,
+    provenance: false,
+    gates: standardGates,
+    compatibility: {
+      ...fullySupported("1.27 – 1.29"),
+      gke: { status: "unsupported", kubernetes: "—", note: "Not certified on GKE." },
+    },
+    dependencies: relyxusDependencies("13 – 15"),
+    notes: ["Security fixes only"],
   },
   {
     id: "rel_2_1_0",
@@ -172,6 +277,19 @@ export const releases: Release[] = [
     endOfSupportAt: "2026-09-30T00:00:00Z",
     ociDigest: "sha256:e7f9a1c3b5d7e9f1a3c5b7d9e1f3a5c7b9d1e3f5a7c9b1d3e5f7a9c1b3d5e7f9",
     helmChartVersion: "2.1.0",
+    minUpgradeFrom: "2.0.0",
+    signed: true,
+    provenance: false,
+    gates: standardGates,
+    compatibility: {
+      eks: { status: "supported", kubernetes: "1.26 – 1.28" },
+      aks: { status: "supported", kubernetes: "1.26 – 1.28" },
+      gke: { status: "unsupported", kubernetes: "—" },
+      openshift: { status: "unsupported", kubernetes: "—" },
+      rke2: { status: "conditional", kubernetes: "1.27 – 1.28", note: "Air-gapped installs only." },
+    },
+    dependencies: relyxusDependencies("12 – 14"),
+    notes: ["End of support 30 Sep 2026"],
   },
   {
     id: "rel_s_0_9_2",
@@ -181,5 +299,18 @@ export const releases: Release[] = [
     releasedAt: "2026-09-30T10:00:00Z",
     ociDigest: "sha256:0d2f4a6c8e0b2d4f6a8c0e2b4d6f8a0c2e4b6d8f0a2c4e6b8d0f2a4c6e8b0d2f",
     helmChartVersion: "0.9.2",
+    minUpgradeFrom: "0.9.0",
+    signed: true,
+    provenance: true,
+    gates: passed("Unit and integration tests", "Pilot acceptance", "Release approval"),
+    compatibility: {
+      eks: { status: "supported", kubernetes: "1.30 – 1.31" },
+      aks: { status: "unsupported", kubernetes: "—" },
+      gke: { status: "unsupported", kubernetes: "—" },
+      openshift: { status: "unsupported", kubernetes: "—" },
+      rke2: { status: "unsupported", kubernetes: "—" },
+    },
+    dependencies: [{ name: "PostgreSQL", versions: "16" }],
+    notes: ["Pilot release, Apporine managed only"],
   },
 ];

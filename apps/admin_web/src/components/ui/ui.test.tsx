@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { CopyableId } from "./copyable-id";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 import { MetricCard } from "./metric-card";
+import { SegmentNav } from "./segment-nav";
 
 describe("Button", () => {
   it("defaults to type=button so it never submits a form by accident", () => {
@@ -116,5 +117,46 @@ describe("MetricCard", () => {
     expect(screen.queryByText("£4.82M")).not.toBeInTheDocument();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByText("Requires finance scope")).toBeInTheDocument();
+  });
+});
+
+describe("MetricCard extras", () => {
+  it("renders a decorative icon, detail and visual", () => {
+    const { container } = render(
+      <MetricCard
+        label="Deployments"
+        value="12"
+        detail="3 in production"
+        href="/deployments"
+        source="Registered deployments"
+        icon={<svg data-testid="icon" />}
+      >
+        <span>sparkline</span>
+      </MetricCard>,
+    );
+    expect(screen.getByTestId("icon").parentElement).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByText("3 in production")).toBeInTheDocument();
+    expect(screen.getByText("sparkline")).toBeInTheDocument();
+    expect(container.querySelector("section")).toHaveAccessibleName("Deployments");
+  });
+});
+
+describe("SegmentNav", () => {
+  it("marks the current view and shows counts", () => {
+    render(
+      <SegmentNav
+        label="Views"
+        items={[
+          { href: "/a", label: "Mine", count: 2, current: true },
+          { href: "/b", label: "Team", count: 0, current: false },
+          { href: "/c", label: "All", current: false },
+        ]}
+      />,
+    );
+    const nav = screen.getByRole("navigation", { name: "Views" });
+    expect(nav).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /^Team/ })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "All" })).toHaveAttribute("href", "/c");
   });
 });

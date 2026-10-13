@@ -74,6 +74,10 @@ export async function listReleases(productId?: string): Promise<Release[]> {
   return productId ? releases.filter((r) => r.productId === productId) : releases;
 }
 
+export async function getRelease(id: string): Promise<Release | undefined> {
+  return releases.find((r) => r.id === id);
+}
+
 // Customers --------------------------------------------------------------------------------
 
 export async function listCustomers(): Promise<Customer[]> {
@@ -108,6 +112,10 @@ export async function getLicense(id: string): Promise<License | undefined> {
 
 export async function listDeployments(customerId?: string): Promise<Deployment[]> {
   return customerId ? deployments.filter((d) => d.customerId === customerId) : deployments;
+}
+
+export async function getDeployment(id: string): Promise<Deployment | undefined> {
+  return deployments.find((d) => d.id === id);
 }
 
 // Governance -------------------------------------------------------------------------------

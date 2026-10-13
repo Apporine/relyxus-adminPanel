@@ -20,6 +20,25 @@ test.describe("motion and scrolling", () => {
     await expect.poll(() => region.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
   });
 
+  for (const path of ["/", "/customers", "/customers/cus_halden", "/licensing", "/approvals"]) {
+    test(`no scroll container on ${path} shows a scrollbar`, async ({ page }) => {
+      await gotoReady(page, path);
+      const shown = await page.evaluate(
+        () =>
+          [document.documentElement, ...document.querySelectorAll("*")]
+            .filter((el) => {
+              const style = getComputedStyle(el);
+              return (
+                el === document.documentElement ||
+                /(auto|scroll)/.test(style.overflowX + style.overflowY)
+              );
+            })
+            .filter((el) => getComputedStyle(el).scrollbarWidth !== "none").length,
+      );
+      expect(shown).toBe(0);
+    });
+  }
+
   test.describe("with motion allowed", () => {
     test.use({ contextOptions: { reducedMotion: "no-preference" } });
 

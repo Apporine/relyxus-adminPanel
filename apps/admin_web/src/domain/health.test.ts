@@ -6,6 +6,7 @@ import {
 } from "./health";
 import { buildTimeline } from "./timeline";
 import type { Contact, Contract, Customer, Deployment, License, SupportCase } from "./types";
+import { deploymentMetadata, releaseRecord } from "@/test/builders";
 
 const NOW = "2026-10-13T09:00:00Z";
 
@@ -90,6 +91,7 @@ const license = (state: License["state"], expiresAt = "2027-10-01T00:00:00Z"): L
 });
 
 const deployment = (overrides: Partial<Deployment> = {}): Deployment => ({
+  ...deploymentMetadata,
   id: "dep_1",
   customerId: "cus_a",
   productId: "prd_a",
@@ -133,6 +135,7 @@ function input(overrides: Partial<HealthInput> = {}): HealthInput {
         status: "released",
         ociDigest: "",
         helmChartVersion: "",
+        ...releaseRecord,
       },
     ],
     contacts: [
@@ -187,6 +190,7 @@ describe("computeHealthFactors", () => {
           status: "end_of_support",
           ociDigest: "",
           helmChartVersion: "",
+          ...releaseRecord,
         },
       ],
     });
