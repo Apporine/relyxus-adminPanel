@@ -30,7 +30,7 @@ test.describe("global shell", () => {
     await expect(page.getByRole("banner").getByText("DEVELOPMENT")).toBeVisible();
     await expect(page.getByRole("link", { name: "4 pending approvals" })).toHaveAttribute(
       "href",
-      "/approvals",
+      "/approvals?view=team",
     );
   });
 

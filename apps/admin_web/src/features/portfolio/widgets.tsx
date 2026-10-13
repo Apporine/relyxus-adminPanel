@@ -193,7 +193,7 @@ export function SummaryMetrics({
         icon={<Stamp />}
         value={formatNumber(summary.pendingApprovals)}
         detail={`${summary.highImpactApprovals} high impact · oldest ${summary.oldestApprovalDays} days`}
-        href="/approvals"
+        href="/approvals?view=team"
         source="Governed requests awaiting decision"
       />
     </section>
