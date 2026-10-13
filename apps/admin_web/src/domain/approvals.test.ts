@@ -155,7 +155,11 @@ describe("targets and copy", () => {
     expect(targetHref(request({ targetType: "contract_line", customerId: "cus_1" }))).toBe(
       "/customers/cus_1?tab=contracts",
     );
-    expect(targetHref(request({ targetType: "signing_key" }))).toBe("/security");
+    expect(targetHref(request({ targetType: "signing_key" }))).toBe("/security/signing-keys");
+    expect(targetHref(request({ targetType: "staff", targetId: "stf_08" }))).toBe(
+      "/security/staff?person=stf_08",
+    );
+    expect(targetHref(request({ targetType: "policy" }))).toBe("/security");
   });
 
   it("uses the spec §31 decision copy", () => {

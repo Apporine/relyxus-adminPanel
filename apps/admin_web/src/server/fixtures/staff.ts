@@ -99,6 +99,26 @@ export const staff: StaffUser[] = [
     mfaEnabled: true,
     lastSignInAt: "2026-10-13T07:05:00Z",
   },
+  {
+    id: "stf_10",
+    name: "Inês Duarte",
+    email: "ines.duarte@apporine.example",
+    title: "Internal Auditor",
+    roles: ["auditor"],
+    productScope: [],
+    mfaEnabled: true,
+    lastSignInAt: "2026-10-10T14:22:00Z",
+  },
+  {
+    id: "stf_11",
+    name: "Marcus Bell",
+    email: "marcus.bell@apporine.example",
+    title: "Platform Engineer",
+    roles: ["platform_admin"],
+    productScope: [],
+    mfaEnabled: true,
+    lastSignInAt: "2026-07-02T10:15:00Z",
+  },
 ];
 
 export const products: Product[] = [
