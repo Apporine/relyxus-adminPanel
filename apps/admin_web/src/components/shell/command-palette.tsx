@@ -40,7 +40,7 @@ interface QuickAction {
 const quickActions: QuickAction[] = [
   { label: "Create customer", href: "/customers?create=1", icon: Building2 },
   { label: "Create contract", href: "/commercial?create=1", icon: FilePlus2 },
-  { label: "Issue license request", href: "/licensing?issue=1", icon: KeyRound },
+  { label: "Issue license request", href: "/licensing/issue", icon: KeyRound },
   { label: "Add deployment", href: "/deployments?create=1", icon: Server },
   { label: "Create task", href: "/?task=1", icon: ClipboardPlus },
   { label: "Open approval queue", href: "/approvals", icon: Stamp },

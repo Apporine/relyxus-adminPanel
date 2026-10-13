@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
 import { useHydrated } from "@/lib/use-hydrated";
 
@@ -26,12 +26,18 @@ export interface FilterDefinition {
  * instead of flashing a skeleton.
  */
 export function FilterFrame({
+  label,
   filters,
   values,
+  search,
   children,
 }: {
+  /** Accessible name of the filter form, such as "Portfolio filters". */
+  label: string;
   filters: FilterDefinition[];
   values: Record<string, string | undefined>;
+  /** Optional free-text search, applied on Enter. */
+  search?: { name: string; label: string; placeholder: string };
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -48,27 +54,54 @@ export function FilterFrame({
     );
   }
 
-  const active = filters.some((f) => f.allLabel && values[f.name]);
+  const active =
+    filters.some((f) => f.allLabel && values[f.name]) || Boolean(search && values[search.name]);
 
   return (
     <>
       <form
         role="search"
-        aria-label="Portfolio filters"
+        aria-label={label}
         data-hydrated={hydrated}
         className="sticky top-topbar z-(--z-sticky) -mx-4 flex flex-wrap items-end gap-3 border-b border-border bg-canvas/95 px-4 py-3 backdrop-blur-sm md:-mx-8 md:px-8"
-        onSubmit={(event) => event.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!search) return;
+          const term = new FormData(event.currentTarget).get(search.name);
+          navigate({
+            ...values,
+            [search.name]: typeof term === "string" && term.trim() ? term.trim() : undefined,
+          });
+        }}
       >
+        {search ? (
+          <div className="flex w-64 flex-col gap-1">
+            <label
+              htmlFor={`filter-${search.name}`}
+              className="text-micro font-medium text-fg-muted"
+            >
+              {search.label}
+            </label>
+            <Input
+              id={`filter-${search.name}`}
+              name={search.name}
+              type="search"
+              defaultValue={values[search.name] ?? ""}
+              placeholder={search.placeholder}
+              className="h-8 text-dense"
+            />
+          </div>
+        ) : null}
         {filters.map((filter) => (
           <div key={filter.name} className="flex w-36 flex-col gap-1">
             <label
-              htmlFor={`portfolio-filter-${filter.name}`}
+              htmlFor={`filter-${filter.name}`}
               className="text-micro font-medium text-fg-muted"
             >
               {filter.label}
             </label>
             <Select
-              id={`portfolio-filter-${filter.name}`}
+              id={`filter-${filter.name}`}
               name={filter.name}
               value={values[filter.name] ?? ""}
               onChange={(event) =>
@@ -89,7 +122,14 @@ export function FilterFrame({
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => navigate({ range: values.range })}
+            onClick={() =>
+              // Keep filters that always have a value (no "all" option), such as a date range.
+              navigate(
+                Object.fromEntries(
+                  filters.filter((f) => !f.allLabel).map((f) => [f.name, values[f.name]]),
+                ),
+              )
+            }
             className="mb-0"
           >
             Clear filters
