@@ -13,6 +13,11 @@ import type {
   AuditEvent,
   AuditExport,
   AuditStreamStatus,
+  CloudCostLine,
+  CostSource,
+  FxRates,
+  LaborRates,
+  ServiceTime,
   BreakGlassActivation,
   Contact,
   Contract,
@@ -49,6 +54,14 @@ import {
 } from "../fixtures/audit";
 import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
+import {
+  cloudCostLines,
+  COST_MONTH,
+  costSources,
+  fxRates,
+  laborRates,
+  serviceTime,
+} from "../fixtures/finance";
 import {
   customerEntitlements,
   entitlementDefinitions,
@@ -281,6 +294,27 @@ export async function listSuccessMilestones(customerId?: string): Promise<Succes
   return customerId
     ? successMilestones.filter((m) => m.customerId === customerId)
     : successMilestones;
+}
+
+// Finance ------------------------------------------------------------------------------------
+
+/** Finance inputs for one month; amounts are Apporine's own costs, never customer cloud. */
+export async function getFinanceInputs(): Promise<{
+  month: string;
+  lines: CloudCostLine[];
+  time: ServiceTime[];
+  labor: LaborRates;
+  fx: FxRates;
+  sources: CostSource[];
+}> {
+  return {
+    month: COST_MONTH,
+    lines: cloudCostLines,
+    time: serviceTime,
+    labor: laborRates,
+    fx: fxRates,
+    sources: costSources,
+  };
 }
 
 // Security operations ------------------------------------------------------------------------
