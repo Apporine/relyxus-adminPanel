@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { ModulePlaceholder } from "@/components/shell/module-placeholder";
-import { AnalyticsNav } from "@/features/finance/finance-parts";
+import { Suspense } from "react";
+import { PageHeader } from "@/components/ui/page-header";
+import { AnalyticsNav, FinanceSkeleton } from "@/features/finance/finance-parts";
+import { ReportLibrary } from "@/features/reports/library";
 
-export const metadata: Metadata = { title: "Analytics" };
+export const metadata: Metadata = { title: "Report library" };
 
-export default function AnalyticsPage() {
+export default function Page() {
   return (
     <div className="flex flex-col gap-6">
-      <AnalyticsNav current="reports" />
-      <ModulePlaceholder
-        title="Analytics"
-        description="Reports, saved views and operational intelligence."
-        feature="F14"
-        screens={["Report library", "Report builder", "Saved views", "Scheduled reports"]}
+      <PageHeader
+        title="Report library"
+        description="Reports over approved datasets, by family. Each report shows only the fields your role may see."
       />
+      <AnalyticsNav current="reports" />
+      <Suspense fallback={<FinanceSkeleton />}>
+        <ReportLibrary />
+      </Suspense>
     </div>
   );
 }
