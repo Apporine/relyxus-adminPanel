@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
-import { ModulePlaceholder } from "@/components/shell/module-placeholder";
+import { Suspense } from "react";
+import { PageHeader } from "@/components/ui/page-header";
+import { HealthOverview, SuccessSkeleton } from "@/features/success/health";
+import { SuccessNav } from "@/features/success/success-parts";
 
 export const metadata: Metadata = { title: "Success" };
 
-export default function SuccessPage() {
+export default function Page() {
   return (
-    <ModulePlaceholder
-      title="Success"
-      description="Customer success and support."
-      feature="F11"
-      screens={[
-        "Health overview",
-        "Customer health detail",
-        "Success plan",
-        "QBR record",
-        "Risk register",
-        "Support overview",
-        "Escalation workspace",
-        "SLA report",
-      ]}
-    />
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Success and support"
+        description="Customer health, success plans, onboarding and support. Health is advisory; support content stays in the support platform."
+      />
+      <SuccessNav current="health" />
+      <Suspense fallback={<SuccessSkeleton />}>
+        <HealthOverview />
+      </Suspense>
+    </div>
   );
 }

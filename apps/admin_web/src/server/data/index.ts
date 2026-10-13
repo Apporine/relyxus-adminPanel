@@ -15,12 +15,17 @@ import type {
   CustomerEntitlement,
   Deployment,
   EntitlementDefinition,
+  HealthOverride,
   Environment,
   License,
   ObservedEntitlement,
+  OnboardingItem,
   Product,
+  QbrRecord,
   Release,
+  RiskEntry,
   StaffUser,
+  SuccessGoal,
   SuccessMilestone,
   SupportCase,
   Task,
@@ -47,6 +52,13 @@ import {
   supportCases,
   tasks,
 } from "../fixtures/operations";
+import {
+  healthOverrides,
+  onboardingItems,
+  qbrs,
+  riskRegister,
+  successGoals,
+} from "../fixtures/success";
 import { CURRENT_STAFF_ID, REFERENCE_NOW, products, releases, staff } from "../fixtures/staff";
 
 // Session --------------------------------------------------------------------------------
@@ -199,6 +211,34 @@ export async function getCrmSyncStatus() {
 
 export async function listSupportCases(customerId?: string): Promise<SupportCase[]> {
   return customerId ? supportCases.filter((c) => c.customerId === customerId) : supportCases;
+}
+
+export async function getSupportCase(id: string): Promise<SupportCase | undefined> {
+  return supportCases.find((c) => c.id === id);
+}
+
+export async function listSuccessGoals(customerId?: string): Promise<SuccessGoal[]> {
+  return customerId ? successGoals.filter((g) => g.customerId === customerId) : successGoals;
+}
+
+export async function listQbrs(customerId?: string): Promise<QbrRecord[]> {
+  return customerId ? qbrs.filter((q) => q.customerId === customerId) : qbrs;
+}
+
+export async function getQbr(id: string): Promise<QbrRecord | undefined> {
+  return qbrs.find((q) => q.id === id);
+}
+
+export async function listRiskRegister(): Promise<RiskEntry[]> {
+  return riskRegister;
+}
+
+export async function listHealthOverrides(): Promise<HealthOverride[]> {
+  return healthOverrides;
+}
+
+export async function listOnboardingItems(): Promise<OnboardingItem[]> {
+  return onboardingItems;
 }
 
 export async function listSuccessMilestones(customerId?: string): Promise<SuccessMilestone[]> {

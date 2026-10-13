@@ -467,9 +467,100 @@ export interface SupportCase {
   slaState: "within" | "at_risk" | "breached";
   ownerId: string;
   releaseVersion: string;
+  /** Support platform holding the full case; only the reference is kept here (spec §20). */
+  sourceSystem?: "Jira Service Management" | "Zendesk" | "ServiceNow";
+  productId?: string;
+  firstResponseAt?: Iso;
+  escalation?: Escalation;
+}
+
+/** Escalation workspace record (spec §20). */
+export interface Escalation {
+  level: 1 | 2 | 3;
+  openedAt: Iso;
+  businessContext: string;
+  ownerIds: string[];
+  /** How often the customer is updated, such as "Every 4 hours". */
+  cadence: string;
+  executiveVisible: boolean;
+  nextUpdateAt: Iso;
+  updates: { at: Iso; byId: string; note: string }[];
+}
+
+/** Success plan goal (spec §20). */
+export interface SuccessGoal {
+  id: string;
+  customerId: string;
+  title: string;
+  outcome: string;
+  measure: string;
+  status: "on_track" | "at_risk" | "achieved";
+  ownerId: string;
+}
+
+/** Quarterly business review record (spec §20). Sensitive notes are restricted. */
+export interface QbrRecord {
+  id: string;
+  customerId: string;
+  heldAt: Iso;
+  attendees: { name: string; side: "apporine" | "customer" }[];
+  summary: string;
+  commitments: { text: string; ownerId: string; dueAt: Iso; status: "open" | "done" }[];
+  nextActions: string[];
+  sensitiveNotes?: string;
+}
+
+/** Risk register entry. */
+export interface RiskEntry {
+  id: string;
+  customerId: string;
+  title: string;
+  category:
+    | "commercial"
+    | "licensing"
+    | "deployment"
+    | "support"
+    | "adoption"
+    | "relationship"
+    | "security";
+  severity: "low" | "medium" | "high";
+  ownerId: string;
+  mitigation: string;
+  raisedAt: Iso;
+  dueAt: Iso;
+  status: "open" | "mitigating" | "accepted" | "closed";
+}
+
+/**
+ * Operator override of a derived health factor (spec §19): reason, expiry and approver,
+ * with the calculated value kept visible.
+ */
+export interface HealthOverride {
+  customerId: string;
+  factor: string;
+  to: "ok" | "attention" | "risk";
+  reason: string;
+  byId: string;
+  approverId?: string;
+  expiresAt: Iso;
+}
+
+/** Onboarding checklist item (spec §11). */
+export interface OnboardingItem {
+  id: string;
+  customerId: string;
+  stage: LifecycleStage;
+  title: string;
+  ownerId: string;
+  dueAt: Iso;
+  status: "done" | "in_progress" | "not_started" | "blocked";
+  dependsOn?: string;
+  evidenceRef?: string;
 }
 
 export interface SuccessMilestone {
+  goalId?: string;
+  evidenceRef?: string;
   customerId: string;
   title: string;
   ownerId: string;
