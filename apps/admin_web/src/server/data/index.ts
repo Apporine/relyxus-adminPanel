@@ -8,7 +8,10 @@ import "server-only";
 import { healthStatus, licenseState, supportState } from "@/domain/status";
 import type {
   ApprovalRequest,
+  AccessReviewCampaign,
+  ApiClient,
   AuditEvent,
+  BreakGlassActivation,
   Contact,
   Contract,
   Customer,
@@ -24,6 +27,10 @@ import type {
   QbrRecord,
   Release,
   RiskEntry,
+  SecuritySignalWeek,
+  SensitiveAccessEvent,
+  SigningKey,
+  StaffAccess,
   StaffUser,
   SuccessGoal,
   SuccessMilestone,
@@ -59,6 +66,16 @@ import {
   riskRegister,
   successGoals,
 } from "../fixtures/success";
+import {
+  accessReviews,
+  apiClients,
+  breakGlass,
+  reviewCompletionHistory,
+  securitySignals,
+  sensitiveAccess,
+  signingKeys,
+  staffAccess,
+} from "../fixtures/security";
 import { CURRENT_STAFF_ID, REFERENCE_NOW, products, releases, staff } from "../fixtures/staff";
 
 // Session --------------------------------------------------------------------------------
@@ -245,6 +262,45 @@ export async function listSuccessMilestones(customerId?: string): Promise<Succes
   return customerId
     ? successMilestones.filter((m) => m.customerId === customerId)
     : successMilestones;
+}
+
+// Security operations ------------------------------------------------------------------------
+
+export async function listStaffAccess(): Promise<StaffAccess[]> {
+  return staffAccess;
+}
+
+export async function listAccessReviews(): Promise<AccessReviewCampaign[]> {
+  return accessReviews;
+}
+
+export async function getAccessReview(id: string): Promise<AccessReviewCampaign | undefined> {
+  return accessReviews.find((r) => r.id === id);
+}
+
+export async function listApiClients(): Promise<ApiClient[]> {
+  return apiClients;
+}
+
+/** Key metadata only; private key material never leaves KMS (spec §23). */
+export async function listSigningKeys(): Promise<SigningKey[]> {
+  return signingKeys;
+}
+
+export async function listBreakGlass(): Promise<BreakGlassActivation[]> {
+  return breakGlass;
+}
+
+export async function listSensitiveAccess(): Promise<SensitiveAccessEvent[]> {
+  return sensitiveAccess;
+}
+
+export async function listSecuritySignals(): Promise<SecuritySignalWeek[]> {
+  return securitySignals;
+}
+
+export async function listReviewCompletionHistory() {
+  return reviewCompletionHistory;
 }
 
 // Search -------------------------------------------------------------------------------------

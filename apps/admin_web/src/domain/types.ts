@@ -584,3 +584,127 @@ export interface HealthSnapshot {
   atRisk: number;
   critical: number;
 }
+
+// Security operations (spec §5, §23) -----------------------------------------------------
+
+/** Time-limited role elevation; preferred to permanent broad access (spec §5.1). */
+export interface TemporaryGrant {
+  role: RoleKey;
+  grantedAt: Iso;
+  expiresAt: Iso;
+  grantedById: string;
+  approvalId?: string;
+  reason: string;
+  /** Set once the grant is removed; an expired grant without it is still assigned. */
+  removedAt?: Iso;
+}
+
+/** Security view of a staff account: identity, sessions and role use (spec §23). */
+export interface StaffAccess {
+  staffId: string;
+  identitySource: "Entra ID" | "Okta";
+  authMethod: "Phishing-resistant MFA" | "Authenticator app" | "Password only";
+  status: "active" | "suspended";
+  activeSessions: number;
+  failedSignIns30d: number;
+  /** Last time each assigned role was exercised; a missing role was never used. */
+  roleLastUsedAt: Partial<Record<RoleKey, Iso>>;
+  temporaryGrants: TemporaryGrant[];
+}
+
+export type ReviewDisposition = "pending" | "keep" | "reduce" | "remove";
+
+export interface AccessReviewItem {
+  staffId: string;
+  role: RoleKey;
+  disposition: ReviewDisposition;
+  decidedById?: string;
+  note?: string;
+}
+
+/** Access review campaign; decisions change nothing until applied (spec §23, §31). */
+export interface AccessReviewCampaign {
+  id: string;
+  title: string;
+  scope: string;
+  reviewerId: string;
+  startedAt: Iso;
+  dueAt: Iso;
+  closedAt?: Iso;
+  items: AccessReviewItem[];
+}
+
+/** Machine client of the Control API. Secrets are never shown, only metadata. */
+export interface ApiClient {
+  id: string;
+  name: string;
+  ownerId: string;
+  purpose: string;
+  scopes: string[];
+  environment: Environment;
+  state: "active" | "disabled" | "revoked";
+  createdAt: Iso;
+  lastUsedAt?: Iso;
+  credentialCreatedAt: Iso;
+  rotationDueAt: Iso;
+}
+
+/** License signing key metadata. Private key material is never displayed (spec §23). */
+export interface SigningKey {
+  id: string;
+  algorithm: "Ed25519" | "ECDSA P-256";
+  status: "planned" | "active" | "verify_only" | "retired";
+  createdAt: Iso;
+  activatedAt?: Iso;
+  /** End of the window in which verifiers trust both the old and the new key. */
+  overlapEndsAt?: Iso;
+  retiredAt?: Iso;
+  nextRotationAt?: Iso;
+  publicKeyFingerprint: string;
+  /** Supported releases whose verifier trusts this key, out of all supported releases. */
+  verifierAdoption: { trusted: number; total: number };
+  custodianId: string;
+}
+
+export type BreakGlassState = "requested" | "active" | "expired" | "ended" | "rejected";
+
+/** Emergency access record: time limited, audited, approved by policy (spec §23). */
+export interface BreakGlassActivation {
+  id: string;
+  staffId: string;
+  incidentRef: string;
+  reason: string;
+  scope: string;
+  state: BreakGlassState;
+  requestedAt: Iso;
+  approverId?: string;
+  approvalId?: string;
+  activatedAt?: Iso;
+  expiresAt: Iso;
+  endedAt?: Iso;
+  /** Actions taken under the elevated access, as audit event counts and references. */
+  actionsRecorded: number;
+  evidence: Evidence[];
+}
+
+/** Who viewed or exported a restricted commercial or security field (spec §23). */
+export interface SensitiveAccessEvent {
+  id: string;
+  at: Iso;
+  staffId: string;
+  action: "viewed" | "exported";
+  classification: "commercial" | "security";
+  field: string;
+  objectType: string;
+  objectId: string;
+  customerId?: string;
+  purpose: string;
+}
+
+/** Weekly security signals behind the posture trend. */
+export interface SecuritySignalWeek {
+  week: Iso;
+  failedAdminAuth: number;
+  revokeRequests: number;
+  openFindings: number;
+}

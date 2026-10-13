@@ -215,7 +215,9 @@ export function targetHref(request: ApprovalRequest): string | undefined {
     case "entitlement":
       return request.customerId ? `/customers/${request.customerId}?tab=entitlements` : undefined;
     case "signing_key":
+      return "/security/signing-keys";
     case "staff":
+      return `/security/staff?person=${request.targetId}`;
     case "policy":
       return "/security";
   }

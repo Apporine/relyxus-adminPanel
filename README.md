@@ -23,6 +23,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 | Commercial and entitlements     | `/commercial` contracts, `/commercial/contracts/[id]`, renewal radar and workspace, entitlement definitions, customer entitlements, drift review                     | Done    |
 | Products                        | `/products` portfolio, `/products/[id]` overview, entitlement catalog, customers and release train                                                                   | Done    |
 | Success and support             | `/success` health overview, customer health detail, success plans, QBRs, risk register, onboarding board; `/success/support` cases, escalation workspace, SLA report | Done    |
+| Security                        | `/security` posture, staff access, roles and role detail, access reviews, API clients, signing keys, break glass, sensitive data access                              | Done    |
 | All other modules               | Routed placeholders that list each module's planned screens                                                                                                          | Planned |
 
 ## Getting started
