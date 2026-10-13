@@ -151,6 +151,76 @@ export interface Contract {
   purchaseOrderRef?: string;
   renewalStage: RenewalStage;
   renewalOwnerId: string;
+  legalEntity: string;
+  /** Contracted value per entitlement key; the commercial source of truth (spec §13). */
+  scope: Record<string, string>;
+  documents: ContractDocuments;
+  renewalTarget?: Money;
+  procurementContactId?: string;
+  /** Link to the billing system only; no payment or card data is held (spec §13). */
+  billing: { invoiceSystemId: string; paymentStatus: "current" | "overdue" | "not_integrated" };
+}
+
+/** Secure references to signed documents; the documents live in the document store. */
+export interface ContractDocuments {
+  masterAgreement: string;
+  orderForm: string;
+  dataProcessingAgreement?: string;
+  securityAddendum?: string;
+}
+
+// Entitlements ------------------------------------------------------------------------
+
+export type EntitlementDataType = "integer" | "enum" | "boolean";
+
+/** Product scoped entitlement definition (spec §14). */
+export interface EntitlementDefinition {
+  id: string;
+  productId: string;
+  key: string;
+  label: string;
+  dataType: EntitlementDataType;
+  /** Human-readable validation rule, such as "1 to 10". */
+  validation: string;
+  allowedValues?: string[];
+  defaultValue: string;
+  description: string;
+  lifecycle: "draft" | "active" | "deprecated";
+  /** Allowances may be under-used by deployments; other values must match exactly. */
+  comparison: "allowance" | "exact";
+}
+
+export interface EntitlementChange {
+  at: Iso;
+  value: string;
+  byId: string;
+  reason: string;
+  approvalId?: string;
+}
+
+/** Customer entitlement record derived from a contract (spec §14). */
+export interface CustomerEntitlement {
+  id: string;
+  customerId: string;
+  productId: string;
+  key: string;
+  value: string;
+  sourceContractId: string;
+  effectiveAt: Iso;
+  expiresAt: Iso;
+  overrideReason?: string;
+  approvalId?: string;
+  history: EntitlementChange[];
+}
+
+/** License metadata a deployment reported at check in; observed, never authoritative. */
+export interface ObservedEntitlement {
+  customerId: string;
+  productId: string;
+  key: string;
+  value: string;
+  observedAt: Iso;
+  deploymentId: string;
 }
 
 // Licensing ---------------------------------------------------------------------------

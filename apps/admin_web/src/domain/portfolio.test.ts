@@ -17,7 +17,7 @@ import type {
   Release,
   Task,
 } from "./types";
-import { deploymentMetadata, releaseRecord } from "@/test/builders";
+import { contractRecord, deploymentMetadata, releaseRecord } from "@/test/builders";
 
 const NOW = "2026-10-13T09:00:00Z";
 const gbp = (k: number): Money => ({ amountMinor: k * 100_000, currency: "GBP" });
@@ -60,6 +60,7 @@ function contract(customerId: string, endsAt: string, value = gbp(100)): Contrac
     endsAt,
     noticeDays: 60,
     renewalType: "manual",
+    ...contractRecord,
     annualContractValue: value,
     billingFrequency: "annual",
     renewalStage: "not_started",

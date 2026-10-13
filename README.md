@@ -20,6 +20,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 | Licensing                       | `/licensing` list, `/licensing/[id]` detail, issue/renew/replace/rebind/suspend/revoke flows, `/licensing/verify`                                    | Done    |
 | Approvals                       | `/approvals` queue (Mine, Team, High impact, Expiring, Decided, All), `/approvals/[id]` detail, `/approvals/decisions`                               | Done    |
 | Deployments and releases        | `/deployments` fleet, heatmap, upgrade readiness, `/deployments/[id]`; `/releases` list, compatibility matrix, `/releases/[id]` with customer impact | Done    |
+| Commercial and entitlements     | `/commercial` contracts, `/commercial/contracts/[id]`, renewal radar and workspace, entitlement definitions, customer entitlements, drift review     | Done    |
 | All other modules               | Routed placeholders that list each module's planned screens                                                                                          | Planned |
 
 ## Getting started
@@ -39,6 +40,7 @@ Pages worth opening:
 - `/licensing/LIC_00409` — license in grace; try Renew license, or `/licensing/LIC_00388/revoke` for the four-eyes revoke flow.
 - `/licensing/verify` — artifact integrity check with intact and tampered examples.
 - `/deployments/readiness` — every deployment against the newest release, with the reason it is blocked or needs review. `/releases/rel_2_5_0` is a built but unsupported release with failing gates.
+- `/commercial/renewals` — renewal radar by 30/60/90/120 day window; open `/commercial/renewals/ctr_halden` for the workspace. `/commercial/drift` compares contract, entitlement, signed license and deployment check ins.
 - `/approvals` — requests waiting for you. `/approvals/apr_1039` can be decided; `/approvals/apr_1042` is your own request, so the self-approval guard blocks it.
 - `/design-system` — tokens and components.
 

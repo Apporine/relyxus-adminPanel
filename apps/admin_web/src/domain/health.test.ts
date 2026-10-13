@@ -6,7 +6,7 @@ import {
 } from "./health";
 import { buildTimeline } from "./timeline";
 import type { Contact, Contract, Customer, Deployment, License, SupportCase } from "./types";
-import { deploymentMetadata, releaseRecord } from "@/test/builders";
+import { contractRecord, deploymentMetadata, releaseRecord } from "@/test/builders";
 
 const NOW = "2026-10-13T09:00:00Z";
 
@@ -58,6 +58,7 @@ const contract = (
   endsAt,
   noticeDays: 30,
   renewalType: "manual",
+  ...contractRecord,
   annualContractValue: { amountMinor: 1, currency: "GBP" },
   billingFrequency: "annual",
   renewalStage,

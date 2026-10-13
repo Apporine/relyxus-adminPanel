@@ -1,4 +1,4 @@
-import type { Deployment, Release } from "@/domain/types";
+import type { Contract, Deployment, Release } from "@/domain/types";
 
 /** Metadata defaults for test deployments; tests override what they assert on. */
 export const deploymentMetadata = {
@@ -28,3 +28,11 @@ export const releaseRecord = {
   dependencies: [],
   notes: [],
 } satisfies Partial<Release>;
+
+/** Contract record defaults for tests: scope, documents and billing link. */
+export const contractRecord = {
+  legalEntity: "Test Legal Entity Ltd",
+  scope: { "deployments.production.max": "2" },
+  documents: { masterAgreement: "doc://msa/test", orderForm: "doc://order-forms/test" },
+  billing: { invoiceSystemId: "NS-000001", paymentStatus: "current" },
+} satisfies Partial<Contract>;
