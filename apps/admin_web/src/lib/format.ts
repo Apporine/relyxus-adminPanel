@@ -81,3 +81,13 @@ export function formatRelativeTime(iso: Iso, now: Iso): string {
   if (Math.abs(hours) < 24) return rtf.format(hours, "hour");
   return rtf.format(Math.round(hours / 24), "day");
 }
+
+/** Per-currency totals, such as "£2.9m · €1.5m · US$1.2m"; an em dash when empty. */
+export function formatMoneyList(values: Money[]): string {
+  return values.length === 0 ? "—" : values.map(formatMoneyCompact).join(" · ");
+}
+
+/** "1 deployment", "3 deployments". English plural with an optional irregular form. */
+export function plural(count: number, singular: string, pluralForm = `${singular}s`): string {
+  return `${formatNumber(count)} ${count === 1 ? singular : pluralForm}`;
+}

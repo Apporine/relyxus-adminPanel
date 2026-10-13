@@ -450,3 +450,38 @@ export const healthHistory: HealthSnapshot[] = [
   { month: "2026-09", healthy: 8, watch: 5, atRisk: 2, critical: 1 },
   { month: "2026-10", healthy: 8, watch: 5, atRisk: 2, critical: 1 },
 ];
+
+/** Weekly count of licenses expiring, in grace, suspended, failed verification or drifting. */
+export const licenseRiskHistory: Array<{ weekOf: string; count: number }> = [
+  { weekOf: "2026-07-27", count: 1 },
+  { weekOf: "2026-08-03", count: 1 },
+  { weekOf: "2026-08-10", count: 2 },
+  { weekOf: "2026-08-17", count: 2 },
+  { weekOf: "2026-08-24", count: 1 },
+  { weekOf: "2026-08-31", count: 2 },
+  { weekOf: "2026-09-07", count: 3 },
+  { weekOf: "2026-09-14", count: 2 },
+  { weekOf: "2026-09-21", count: 3 },
+  { weekOf: "2026-09-28", count: 3 },
+  { weekOf: "2026-10-05", count: 4 },
+  { weekOf: "2026-10-12", count: 4 },
+];
+
+const dailyActions = [38, 44, 41, 12, 9, 47, 52, 49, 55, 43, 14, 11, 58, 61];
+const dailyFailures = [1, 0, 2, 0, 0, 1, 3, 1, 0, 2, 0, 0, 4, 2];
+
+/** Administrative actions per day over the last 14 days. */
+export const auditDaily: Array<{ date: string; actions: number; failures: number }> =
+  dailyActions.map((actions, i) => ({
+    date: new Date(Date.parse("2026-09-30T00:00:00Z") + i * 86_400_000).toISOString().slice(0, 10),
+    actions,
+    failures: dailyFailures[i] ?? 0,
+  }));
+
+export const auditSummary = { uniqueActors: 9, productsAffected: 2, highImpactEvents: 6 };
+
+/** The AWS cost import runs daily; three days without one means cost data is stale. */
+export const costImport = {
+  lastImportedAt: "2026-10-10T04:00:00Z",
+  source: "AWS Cost and Usage Report",
+};

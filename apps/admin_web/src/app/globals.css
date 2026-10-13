@@ -47,6 +47,21 @@
   --ap-nav-fg-muted: #b5b2bd; /* 9.2:1 on Ink */
   --ap-nav-border: #2a2340;
 
+  /*
+   * Chart roles (spec §6.2, §8.1): one Violet series, neutral comparison, Cyan for
+   * selection or healthy state, Coral only for risk. Validated for CVD separation on
+   * white; gray and Coral sit below 3:1, so charts always carry direct labels.
+   */
+  --ap-chart-primary: var(--ap-violet);
+  --ap-chart-primary-2: #a58bff;
+  --ap-chart-primary-3: #d4c8ff;
+  --ap-chart-primary-strong: #5832c8;
+  --ap-chart-neutral: #aaa6b2;
+  --ap-chart-healthy: #0095a8;
+  --ap-chart-risk: var(--ap-coral);
+  --ap-chart-critical: #a8453c;
+  --ap-chart-grid: var(--ap-border);
+
   /* Layout (spec §6.2) */
   --ap-sidebar-width: 248px;
   --ap-sidebar-collapsed-width: 72px;
@@ -101,6 +116,16 @@
   --color-nav-fg: var(--ap-nav-fg);
   --color-nav-fg-muted: var(--ap-nav-fg-muted);
   --color-nav-border: var(--ap-nav-border);
+
+  --color-chart-primary: var(--ap-chart-primary);
+  --color-chart-primary-2: var(--ap-chart-primary-2);
+  --color-chart-primary-3: var(--ap-chart-primary-3);
+  --color-chart-primary-strong: var(--ap-chart-primary-strong);
+  --color-chart-neutral: var(--ap-chart-neutral);
+  --color-chart-healthy: var(--ap-chart-healthy);
+  --color-chart-risk: var(--ap-chart-risk);
+  --color-chart-critical: var(--ap-chart-critical);
+  --color-chart-grid: var(--ap-chart-grid);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
