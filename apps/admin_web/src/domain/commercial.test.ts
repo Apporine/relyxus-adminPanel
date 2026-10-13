@@ -49,6 +49,7 @@ const allowance: EntitlementDefinition = {
   defaultValue: "1",
   description: "",
   lifecycle: "active",
+  securityClassification: "internal",
   comparison: "allowance",
 };
 const tier: EntitlementDefinition = {

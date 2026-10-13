@@ -186,6 +186,8 @@ export interface EntitlementDefinition {
   defaultValue: string;
   description: string;
   lifecycle: "draft" | "active" | "deprecated";
+  /** How sensitive the value is when shared outside Apporine (spec §9). */
+  securityClassification: "public" | "internal" | "confidential";
   /** Allowances may be under-used by deployments; other values must match exactly. */
   comparison: "allowance" | "exact";
 }
