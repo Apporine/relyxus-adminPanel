@@ -12,9 +12,12 @@ import type {
   Contact,
   Contract,
   Customer,
+  CustomerEntitlement,
   Deployment,
+  EntitlementDefinition,
   Environment,
   License,
+  ObservedEntitlement,
   Product,
   Release,
   StaffUser,
@@ -25,6 +28,11 @@ import type {
 import type { SearchResult } from "@/domain/search";
 import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
+import {
+  customerEntitlements,
+  entitlementDefinitions,
+  observedEntitlements,
+} from "../fixtures/entitlements";
 import {
   approvals,
   auditDaily,
@@ -97,6 +105,35 @@ export async function listContacts(customerId?: string): Promise<Contact[]> {
 }
 
 // Commercial and licensing -----------------------------------------------------------------
+
+export async function getContract(id: string): Promise<Contract | undefined> {
+  return contracts.find((c) => c.id === id);
+}
+
+export async function listEntitlementDefinitions(
+  productId?: string,
+): Promise<EntitlementDefinition[]> {
+  return productId
+    ? entitlementDefinitions.filter((d) => d.productId === productId)
+    : entitlementDefinitions;
+}
+
+export async function listCustomerEntitlements(
+  customerId?: string,
+): Promise<CustomerEntitlement[]> {
+  return customerId
+    ? customerEntitlements.filter((e) => e.customerId === customerId)
+    : customerEntitlements;
+}
+
+/** Entitlement metadata deployments reported at check in; observed, never authoritative. */
+export async function listObservedEntitlements(
+  customerId?: string,
+): Promise<ObservedEntitlement[]> {
+  return customerId
+    ? observedEntitlements.filter((o) => o.customerId === customerId)
+    : observedEntitlements;
+}
 
 export async function listContracts(customerId?: string): Promise<Contract[]> {
   return customerId ? contracts.filter((c) => c.customerId === customerId) : contracts;

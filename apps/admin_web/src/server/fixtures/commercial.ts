@@ -9,7 +9,7 @@ import type {
 } from "@/domain/types";
 import { createHash } from "node:crypto";
 import { canonicalJson, canonicalPayload } from "@/domain/artifact";
-import { customers } from "./customers";
+import { contacts, customers } from "./customers";
 
 const pad = (n: number, width = 5) => String(n).padStart(width, "0");
 
@@ -32,6 +32,22 @@ const renewalStages: Record<string, RenewalStage> = {
   cus_harbour: "not_started",
 };
 
+const entitlementSet = (deployments: number, tier: string) => [
+  {
+    key: "deployments.production.max",
+    label: "Production deployments",
+    value: String(deployments),
+  },
+  { key: "deployments.nonproduction.max", label: "Non-production deployments", value: "4" },
+  { key: "support.tier", label: "Support tier", value: tier },
+  { key: "modules.ai_routing", label: "AI routing module", value: "Enabled" },
+  {
+    key: "modules.regulatory_pack",
+    label: "Regulatory reporting pack",
+    value: tier === "mission_critical" ? "Enabled" : "Not included",
+  },
+];
+
 export const contracts: Contract[] = customers
   .filter((c) => c.annualContractValue && c.nextRenewalAt)
   .map((c, i) => {
@@ -52,6 +68,37 @@ export const contracts: Contract[] = customers
       purchaseOrderRef: c.segment === "public_sector" ? `PO-${pad(88_000 + i)}` : undefined,
       renewalStage: renewalStages[c.id] ?? "not_started",
       renewalOwnerId: c.owners.commercial_owner ?? "stf_02",
+      legalEntity: c.legalName,
+      scope: {
+        ...Object.fromEntries(
+          entitlementSet(
+            c.supportTier === "mission_critical" ? 3 : 2,
+            c.supportTier.replace("_", " "),
+          ).map((e) => [e.key, e.value]),
+        ),
+        // Contract amendment AM-03 adds a DR production deployment (apr_1039 pending).
+        ...(c.id === "cus_meridian" ? { "deployments.production.max": "4" } : {}),
+      },
+      documents: {
+        masterAgreement: `doc://msa/${c.id.slice(4)}-2025`,
+        orderForm: `doc://order-forms/APC-${pad(2025_000 + i * 13, 7)}`,
+        dataProcessingAgreement:
+          c.region === "UK" || c.region === "EU" ? `doc://dpa/${c.id.slice(4)}` : undefined,
+        securityAddendum:
+          c.supportTier === "mission_critical" ? `doc://security/${c.id.slice(4)}` : undefined,
+      },
+      renewalTarget: {
+        currency: c.annualContractValue!.currency,
+        amountMinor: Math.round((c.annualContractValue!.amountMinor * 1.08) / 100_000) * 100_000,
+      },
+      procurementContactId: contacts.find(
+        (person) => person.customerId === c.id && person.roles.includes("commercial"),
+      )?.id,
+      billing: {
+        invoiceSystemId: `NS-${pad(40_100 + i * 7, 6)}`,
+        paymentStatus:
+          c.id === "cus_tamsin" ? "overdue" : i % 5 === 4 ? "not_integrated" : "current",
+      },
     };
   });
 
@@ -62,22 +109,6 @@ const licenseOverrides: Record<string, { state: LicenseState; expiresAt?: string
 
 /** Contract lines not licensed yet; the Issue flow offers them. */
 const notYetLicensed = new Set(["cus_vantage:prd_sentinel"]);
-
-const entitlementSet = (deployments: number, tier: string) => [
-  {
-    key: "deployments.production.max",
-    label: "Production deployments",
-    value: String(deployments),
-  },
-  { key: "deployments.nonproduction.max", label: "Non-production deployments", value: "4" },
-  { key: "support.tier", label: "Support tier", value: tier },
-  { key: "modules.ai_routing", label: "AI routing module", value: "Enabled" },
-  {
-    key: "modules.regulatory_pack",
-    label: "Regulatory reporting pack",
-    value: tier === "mission_critical" ? "Enabled" : "Not included",
-  },
-];
 
 export const licenses: License[] = contracts.flatMap((contract, i) => {
   const customer = customers.find((c) => c.id === contract.customerId)!;
