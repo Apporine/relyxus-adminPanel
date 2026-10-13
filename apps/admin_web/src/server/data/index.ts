@@ -84,6 +84,10 @@ export async function getCustomer(id: string): Promise<Customer | undefined> {
   return customers.find((c) => c.id === id);
 }
 
+export async function getContact(id: string): Promise<Contact | undefined> {
+  return contacts.find((c) => c.id === id);
+}
+
 export async function listContacts(customerId?: string): Promise<Contact[]> {
   return customerId ? contacts.filter((c) => c.customerId === customerId) : contacts;
 }
@@ -184,7 +188,7 @@ export async function getSearchIndex(): Promise<SearchResult[]> {
       id: c.id,
       title: c.name,
       subtitle: `${c.title} · ${customerName(c.customerId)}`,
-      href: `/customers/${c.customerId}?tab=contacts`,
+      href: `/customers/${c.customerId}/contacts/${c.id}`,
       keywords: [c.email, customerName(c.customerId)],
       status: c.active ? "active" : "inactive",
     })),

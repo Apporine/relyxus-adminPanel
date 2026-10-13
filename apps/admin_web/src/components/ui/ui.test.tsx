@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import Link from "next/link";
 import { StatusBadge } from "./badge";
 import { Button } from "./button";
 import { CopyableId } from "./copyable-id";
@@ -15,7 +16,7 @@ describe("Button", () => {
   it("renders its child with button styling when asChild is set", () => {
     render(
       <Button asChild variant="primary">
-        <a href="/customers/new">Create customer</a>
+        <Link href="/customers/new">Create customer</Link>
       </Button>,
     );
     const link = screen.getByRole("link", { name: "Create customer" });

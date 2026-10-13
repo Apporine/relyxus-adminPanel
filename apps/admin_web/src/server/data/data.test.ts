@@ -1,6 +1,10 @@
 import { matchSearch, parseSearchQuery } from "@/domain/search";
 import {
   getApproval,
+  getContact,
+  getAuditActivity,
+  getCostImportStatus,
+  getCrmSyncStatus,
   getCurrentStaff,
   getCustomer,
   getEnvironment,
@@ -16,10 +20,13 @@ import {
   listCustomers,
   listDeployments,
   listHealthHistory,
+  listLicenseRiskHistory,
   listLicenses,
   listProducts,
   listReleases,
   listStaff,
+  listSuccessMilestones,
+  listSupportCases,
   listTasks,
 } from "./index";
 
@@ -60,6 +67,8 @@ describe("records", () => {
     expect(await getLicense("LIC_missing")).toBeUndefined();
     expect((await getApproval("apr_1043"))?.highImpact).toBe(true);
     expect(await getApproval("apr_missing")).toBeUndefined();
+    expect((await getContact("con_001"))?.customerId).toBe("cus_northwind");
+    expect(await getContact("con_missing")).toBeUndefined();
   });
 
   it("filters licenses by customer across products", async () => {
@@ -76,6 +85,14 @@ describe("records", () => {
     expect((await listTasks()).length).toBeGreaterThan(0);
     expect((await listCostSnapshots()).length).toBeGreaterThan(0);
     expect((await listHealthHistory()).length).toBe(6);
+    expect((await listSupportCases("cus_atlas")).length).toBe(2);
+    expect((await listSupportCases()).length).toBeGreaterThan(2);
+    expect((await listSuccessMilestones("cus_halden")).length).toBe(2);
+    expect((await listSuccessMilestones()).length).toBeGreaterThan(2);
+    expect((await getCrmSyncStatus()).system).toBe("Salesforce");
+    expect((await listLicenseRiskHistory()).length).toBe(12);
+    expect((await getAuditActivity()).daily).toHaveLength(14);
+    expect((await getCostImportStatus()).source).toMatch(/AWS/);
   });
 });
 
