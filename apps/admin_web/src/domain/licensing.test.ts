@@ -17,6 +17,7 @@ import {
   selectRevision,
 } from "./licensing";
 import type { ApprovalRequest, Deployment, License, LicenseRevision } from "./types";
+import { deploymentMetadata } from "@/test/builders";
 
 const NOW = "2026-10-13T09:00:00Z";
 
@@ -63,6 +64,7 @@ function license(overrides: Partial<License> = {}): License {
 }
 
 const deployment = (id: string, overrides: Partial<Deployment> = {}): Deployment => ({
+  ...deploymentMetadata,
   id,
   customerId: "cus_a",
   productId: "prd_a",

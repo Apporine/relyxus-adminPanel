@@ -165,6 +165,60 @@ const supportFor = (customerId: string, env: DeploymentEnvironment): SupportStat
   return "supported";
 };
 
+const profileFor: Record<Deployment["platform"], Deployment["profile"]> = {
+  AWS: "eks",
+  Azure: "aks",
+  "Google Cloud": "gke",
+  OpenShift: "openshift",
+  "On premises": "rke2",
+};
+
+const countryFor: Record<string, { country: string; residency: string }> = {
+  UK: { country: "United Kingdom", residency: "UK" },
+  EU: { country: "Germany", residency: "EU" },
+  "North America": { country: "United States", residency: "US" },
+  "Middle East": { country: "United Arab Emirates", residency: "GCC" },
+  APAC: { country: "Singapore", residency: "APAC" },
+};
+
+const preflightFor = (customerId: string, env: DeploymentEnvironment) =>
+  customerId === "cus_atlas" && env === "staging"
+    ? "failed"
+    : customerId === "cus_qadira" && env === "dr"
+      ? "warnings"
+      : "passed";
+
+const lastUpgradeFor = (
+  customerId: string,
+  version: string,
+): Deployment["lastUpgrade"] | undefined => {
+  if (customerId === "cus_atlas") {
+    return {
+      at: "2026-09-12T01:30:00Z",
+      fromVersion: "2.1.0",
+      toVersion: "2.4.1",
+      result: "rolled_back",
+    };
+  }
+  if (version === "2.4.1") {
+    return {
+      at: "2026-09-29T02:00:00Z",
+      fromVersion: "2.4.0",
+      toVersion: "2.4.1",
+      result: "succeeded",
+    };
+  }
+  if (version === "2.4.0") {
+    return {
+      at: "2026-08-24T02:00:00Z",
+      fromVersion: "2.3.1",
+      toVersion: "2.4.0",
+      result: "succeeded",
+    };
+  }
+  return undefined;
+};
+
 export const deployments: Deployment[] = customers
   .filter((c) => c.status === "active" || c.lifecycleStage === "pilot_ready")
   .flatMap((c) => {
@@ -202,5 +256,26 @@ export const deployments: Deployment[] = customers
           ? "2026-09-27T04:00:00Z"
           : new Date(Date.parse("2026-10-13T06:00:00Z") - k * 3_600_000).toISOString(),
       technicalOwnerId: c.owners.technical_owner ?? "stf_04",
+      profile: profileFor[platformFor[c.id] ?? "AWS"],
+      clusterId: `clu-${c.id.slice(4, 8)}-${env.slice(0, 3)}-0${k + 1}`,
+      ...(countryFor[c.region] ?? { country: "United Kingdom", residency: "UK" }),
+      installKitVersion: c.id === "cus_atlas" ? "ik-2.1.3" : "ik-2.4.0",
+      preflight: preflightFor(c.id, env),
+      lastUpgrade: lastUpgradeFor(
+        c.id,
+        env === "staging" && c.id !== "cus_atlas" ? "2.4.1" : (releaseFor[c.id] ?? "2.4.1"),
+      ),
+      backupStatus:
+        c.supportTier === "mission_critical"
+          ? c.id === "cus_qadira" && env === "dr"
+            ? "failing"
+            : "healthy"
+          : "not_shared",
+      maintenanceWindow:
+        c.region === "Middle East" ? "Fri 22:00 – 02:00 GST" : "Sun 02:00 – 05:00 UTC",
+      upgradePlan:
+        c.id === "cus_halden" && env === "production"
+          ? { targetVersion: "2.4.1", plannedFor: "2026-11-08T02:00:00Z", recordedById: "stf_04" }
+          : undefined,
     }));
   });

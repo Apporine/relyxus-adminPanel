@@ -198,6 +198,24 @@ export type DeploymentEnvironment = "production" | "staging" | "dr";
 export type SupportState =
   "supported" | "review_needed" | "unsupported" | "stale_check_in" | "license_mismatch" | "unknown";
 
+/** Kubernetes distribution profile a release is certified against (spec §17). */
+export type DeploymentProfile = "eks" | "aks" | "gke" | "openshift" | "rke2";
+
+export type PreflightResult = "passed" | "warnings" | "failed" | "not_run";
+
+export interface UpgradeRecord {
+  at: Iso;
+  fromVersion: string;
+  toVersion: string;
+  result: "succeeded" | "failed" | "rolled_back";
+}
+
+export interface UpgradePlan {
+  targetVersion: string;
+  plannedFor: Iso;
+  recordedById: string;
+}
+
 export interface Deployment {
   id: string;
   customerId: string;
@@ -212,6 +230,18 @@ export interface Deployment {
   supportState: SupportState;
   lastCheckInAt?: Iso;
   technicalOwnerId: string;
+  profile: DeploymentProfile;
+  /** Customer-assigned logical cluster ID; never a hostname or credential. */
+  clusterId: string;
+  country: string;
+  residency: string;
+  installKitVersion: string;
+  preflight: PreflightResult;
+  lastUpgrade?: UpgradeRecord;
+  /** Backup status is shared only when the customer permits it (spec §16). */
+  backupStatus: "healthy" | "failing" | "not_shared";
+  maintenanceWindow: string;
+  upgradePlan?: UpgradePlan;
 }
 
 export type ReleaseStatus =
@@ -226,6 +256,28 @@ export interface Release {
   endOfSupportAt?: Iso;
   ociDigest: string;
   helmChartVersion: string;
+  /** Oldest version that may upgrade directly to this release. */
+  minUpgradeFrom: string;
+  sbomRef?: string;
+  signed: boolean;
+  provenance: boolean;
+  /** Conformance and acceptance gates; artifacts alone never make a release supported. */
+  gates: AcceptanceGate[];
+  compatibility: Record<DeploymentProfile, CompatibilityEntry>;
+  dependencies: { name: string; versions: string }[];
+  notes: string[];
+}
+
+export interface AcceptanceGate {
+  name: string;
+  status: "passed" | "failed" | "pending";
+}
+
+export interface CompatibilityEntry {
+  status: "supported" | "conditional" | "unsupported";
+  /** Kubernetes versions covered, such as "1.29 – 1.31". */
+  kubernetes: string;
+  note?: string;
 }
 
 // Governance --------------------------------------------------------------------------

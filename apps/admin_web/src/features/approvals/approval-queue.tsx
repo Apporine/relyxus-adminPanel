@@ -3,6 +3,7 @@ import Link from "next/link";
 import { StatusBadge, Tag } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Skeleton } from "@/components/ui/feedback";
+import { SegmentNav } from "@/components/ui/segment-nav";
 import {
   approvalViews,
   decisionGuard,
@@ -47,36 +48,15 @@ export async function ApprovalQueue({
 
 function ViewNav({ view, counts }: { view: ApprovalView; counts: Record<ApprovalView, number> }) {
   return (
-    <nav aria-label="Approval views">
-      <ul className="flex w-fit max-w-full scroll-fade-x gap-1 overflow-x-auto rounded-card border border-border bg-surface/70 p-1 shadow-card backdrop-blur-sm">
-        {approvalViews.map((v) => (
-          <li key={v.id}>
-            <Link
-              href={`/approvals?view=${v.id}`}
-              aria-current={v.id === view ? "page" : undefined}
-              scroll={false}
-              className={cn(
-                "inline-flex h-8 items-center gap-2 rounded-control px-3 text-dense font-medium whitespace-nowrap text-fg-muted",
-                "transition-[color,background-color,box-shadow] duration-(--ap-duration-panel) hover:bg-surface-hover hover:text-fg",
-                "aria-[current=page]:bg-ink aria-[current=page]:text-canvas aria-[current=page]:shadow-[0_4px_12px_-6px_rgb(17_10_36/0.6)]",
-              )}
-            >
-              {v.label}
-              <span
-                className={cn(
-                  "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-micro tabular",
-                  v.id === view
-                    ? "bg-canvas/15 text-canvas"
-                    : "bg-surface-sunken text-fg-secondary",
-                )}
-              >
-                {counts[v.id]}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <SegmentNav
+      label="Approval views"
+      items={approvalViews.map((v) => ({
+        href: `/approvals?view=${v.id}`,
+        label: v.label,
+        count: counts[v.id],
+        current: v.id === view,
+      }))}
+    />
   );
 }
 

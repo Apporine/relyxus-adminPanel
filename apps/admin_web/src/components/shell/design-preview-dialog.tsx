@@ -26,6 +26,7 @@ export function DesignPreviewDialog({
   description,
   confirmLabel,
   confirmVariant = "primary",
+  defaultOpen = false,
   children,
 }: {
   trigger: string;
@@ -36,9 +37,11 @@ export function DesignPreviewDialog({
   description: string;
   confirmLabel: string;
   confirmVariant?: ButtonProps["variant"];
+  /** Opens on first render, for deep links such as a command palette quick action. */
+  defaultOpen?: boolean;
   children?: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [submitted, setSubmitted] = useState(false);
 
   return (

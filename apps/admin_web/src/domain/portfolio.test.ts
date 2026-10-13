@@ -17,6 +17,7 @@ import type {
   Release,
   Task,
 } from "./types";
+import { deploymentMetadata, releaseRecord } from "@/test/builders";
 
 const NOW = "2026-10-13T09:00:00Z";
 const gbp = (k: number): Money => ({ amountMinor: k * 100_000, currency: "GBP" });
@@ -89,6 +90,7 @@ function license(
 
 function deployment(customerId: string, overrides: Partial<Deployment> = {}): Deployment {
   return {
+    ...deploymentMetadata,
     id: `dep_${customerId}_${overrides.environment ?? "production"}`,
     customerId,
     productId: "prd_a",
@@ -114,6 +116,7 @@ const releases: Release[] = [
     endOfSupportAt: "2027-09-01T00:00:00Z",
     ociDigest: "",
     helmChartVersion: "2.0.0",
+    ...releaseRecord,
   },
   {
     id: "rel_1",
@@ -123,6 +126,7 @@ const releases: Release[] = [
     endOfSupportAt: "2026-09-30T00:00:00Z",
     ociDigest: "",
     helmChartVersion: "1.0.0",
+    ...releaseRecord,
   },
 ];
 
