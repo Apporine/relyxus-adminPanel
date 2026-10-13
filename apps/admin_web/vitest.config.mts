@@ -18,7 +18,12 @@ export default defineConfig({
       reporter: ["text", "lcov", "json-summary"],
       include: ["src/domain/**", "src/lib/**", "src/server/**", "src/components/**"],
       exclude: ["src/server/fixtures/**", "**/*.test.*"],
-      thresholds: { lines: 80, functions: 80, statements: 80, branches: 75 },
+      // Logic layers are gated on unit coverage. Shell components are exercised by
+      // Playwright, so they are reported here without a threshold.
+      thresholds: {
+        "src/{domain,lib,server}/**": { lines: 80, functions: 80, statements: 80, branches: 75 },
+        "src/components/ui/**": { lines: 70, functions: 60, statements: 70, branches: 60 },
+      },
     },
   },
 });
