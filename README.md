@@ -29,7 +29,7 @@ First E2E run: `pnpm --filter admin_web exec playwright install chromium`.
 
 - **pre-commit**: ESLint `--fix` and Prettier on staged files (lint-staged).
 - **commit-msg**: Conventional Commits (commitlint).
-- **pre-push**: typecheck and unit tests.
+- **pre-push**: lint, typecheck and unit tests.
 - **CI** on every PR: format, lint, typecheck, unit tests with coverage thresholds, production build, E2E with axe, dependency audit, Semgrep SAST and Gitleaks secret scan.
 - **CD** on `develop` and `main`: production bundle with build provenance, published as a workflow artifact.
 
