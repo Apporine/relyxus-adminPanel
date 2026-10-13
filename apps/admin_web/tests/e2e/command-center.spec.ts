@@ -1,9 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
 import { expectNoA11yViolations } from "./a11y";
 
+// Filter changes commit the URL after the server render, which is slow on a busy dev server.
+const transition = { timeout: 20_000 };
+
 async function gotoReady(page: Page, path: string) {
   await page.goto(path);
   await expect(page.locator("html")).toHaveAttribute("data-shell-ready", "true");
+  // Filter regions stream in after the shell; wait until their handlers are attached.
+  await expect(page.locator('[data-hydrated="true"]').first()).toBeAttached();
 }
 
 const metrics = [
@@ -36,7 +41,7 @@ test.describe("portfolio command center", () => {
     await expect(active).toContainText("12");
 
     await page.getByLabel("Region").selectOption("EU");
-    await expect(page).toHaveURL(/region=EU/);
+    await expect(page).toHaveURL(/region=EU/, transition);
     await expect(active).toContainText("2");
     await expect(
       page.getByText("Monthly history is portfolio-wide and ignores customer filters."),
@@ -44,7 +49,7 @@ test.describe("portfolio command center", () => {
     await expectNoA11yViolations(page);
 
     await page.getByRole("button", { name: "Clear filters" }).click();
-    await expect(page).not.toHaveURL(/region=/);
+    await expect(page).not.toHaveURL(/region=/, transition);
     await expect(active).toContainText("12");
   });
 

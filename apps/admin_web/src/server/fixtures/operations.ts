@@ -1,5 +1,7 @@
 import type {
   ApprovalRequest,
+  SuccessMilestone,
+  SupportCase,
   AuditEvent,
   CostSnapshot,
   HealthSnapshot,
@@ -448,7 +450,7 @@ export const healthHistory: HealthSnapshot[] = [
   { month: "2026-07", healthy: 9, watch: 3, atRisk: 1, critical: 1 },
   { month: "2026-08", healthy: 8, watch: 4, atRisk: 2, critical: 1 },
   { month: "2026-09", healthy: 8, watch: 5, atRisk: 2, critical: 1 },
-  { month: "2026-10", healthy: 8, watch: 5, atRisk: 2, critical: 1 },
+  { month: "2026-10", healthy: 8, watch: 6, atRisk: 2, critical: 1 },
 ];
 
 /** Weekly count of licenses expiring, in grace, suspended, failed verification or drifting. */
@@ -485,3 +487,136 @@ export const costImport = {
   lastImportedAt: "2026-10-10T04:00:00Z",
   source: "AWS Cost and Usage Report",
 };
+
+/** CRM is the source of truth for customer identity fields; the last successful sync. */
+export const crmSync = { system: "Salesforce", lastSyncedAt: "2026-10-11T06:00:00Z" };
+
+/** Case references only; full case content stays in the support platform (spec §20). */
+export const supportCases: SupportCase[] = [
+  {
+    id: "sc_01",
+    customerId: "cus_atlas",
+    externalRef: "JSM-4412",
+    title: "License refresh fails after cluster migration",
+    severity: "sev2",
+    status: "open",
+    openedAt: "2026-10-09T13:20:00Z",
+    slaState: "at_risk",
+    ownerId: "stf_08",
+    releaseVersion: "2.1.0",
+  },
+  {
+    id: "sc_02",
+    customerId: "cus_atlas",
+    externalRef: "JSM-4398",
+    title: "Upgrade path from 2.1 to 2.4",
+    severity: "sev3",
+    status: "pending_customer",
+    openedAt: "2026-10-01T09:00:00Z",
+    slaState: "within",
+    ownerId: "stf_04",
+    releaseVersion: "2.1.0",
+  },
+  {
+    id: "sc_03",
+    customerId: "cus_halden",
+    externalRef: "JSM-4405",
+    title: "Preflight warning on storage class",
+    severity: "sev3",
+    status: "open",
+    openedAt: "2026-10-06T10:30:00Z",
+    slaState: "within",
+    ownerId: "stf_08",
+    releaseVersion: "2.2.4",
+  },
+  {
+    id: "sc_04",
+    customerId: "cus_halden",
+    externalRef: "JSM-4351",
+    title: "Audit export timeout",
+    severity: "sev2",
+    status: "resolved",
+    openedAt: "2026-09-12T08:00:00Z",
+    resolvedAt: "2026-09-15T17:00:00Z",
+    slaState: "breached",
+    ownerId: "stf_08",
+    releaseVersion: "2.2.4",
+  },
+  {
+    id: "sc_05",
+    customerId: "cus_northwind",
+    externalRef: "JSM-4377",
+    title: "SSO group mapping question",
+    severity: "sev4",
+    status: "resolved",
+    openedAt: "2026-09-25T11:00:00Z",
+    resolvedAt: "2026-09-26T09:00:00Z",
+    slaState: "within",
+    ownerId: "stf_08",
+    releaseVersion: "2.4.1",
+  },
+  {
+    id: "sc_06",
+    customerId: "cus_qadira",
+    externalRef: "JSM-4409",
+    title: "DR site offline package import",
+    severity: "sev2",
+    status: "open",
+    openedAt: "2026-10-08T05:40:00Z",
+    slaState: "within",
+    ownerId: "stf_04",
+    releaseVersion: "2.4.0",
+  },
+];
+
+export const successMilestones: SuccessMilestone[] = [
+  {
+    customerId: "cus_northwind",
+    title: "Second production region live",
+    ownerId: "stf_03",
+    dueAt: "2026-08-30T00:00:00Z",
+    status: "done",
+  },
+  {
+    customerId: "cus_northwind",
+    title: "Quarterly business review Q4",
+    ownerId: "stf_03",
+    dueAt: "2026-11-12T00:00:00Z",
+    status: "not_started",
+  },
+  {
+    customerId: "cus_northwind",
+    title: "Adopt regulatory reporting pack",
+    ownerId: "stf_03",
+    dueAt: "2026-12-15T00:00:00Z",
+    status: "in_progress",
+  },
+  {
+    customerId: "cus_halden",
+    title: "Upgrade to supported release 2.4",
+    ownerId: "stf_04",
+    dueAt: "2026-10-31T00:00:00Z",
+    status: "in_progress",
+  },
+  {
+    customerId: "cus_halden",
+    title: "Replace executive sponsor",
+    ownerId: "stf_07",
+    dueAt: "2026-10-20T00:00:00Z",
+    status: "not_started",
+  },
+  {
+    customerId: "cus_solent",
+    title: "Architecture discovery workshop",
+    ownerId: "stf_04",
+    dueAt: "2026-10-08T00:00:00Z",
+    status: "overdue",
+  },
+  {
+    customerId: "cus_kestrel",
+    title: "Security questionnaire returned",
+    ownerId: "stf_06",
+    dueAt: "2026-10-21T00:00:00Z",
+    status: "in_progress",
+  },
+];
