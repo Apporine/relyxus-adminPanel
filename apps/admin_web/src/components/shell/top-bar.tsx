@@ -14,8 +14,10 @@ import { useShell } from "./shell-state";
 const iconButton =
   "relative inline-flex size-9 items-center justify-center rounded-control text-fg-secondary hover:bg-surface-hover hover:text-fg";
 
-const popoverPanel =
-  "z-(--z-toast) w-80 rounded-card border border-border bg-surface p-1.5 shadow-overlay";
+const popoverPanel = cn(
+  "z-(--z-toast) w-80 rounded-card border border-border bg-surface p-1.5 shadow-overlay",
+  "origin-(--radix-popper-transform-origin) data-[state=closed]:animate-pop-out data-[state=open]:animate-pop",
+);
 
 function initials(name: string): string {
   return name
@@ -32,7 +34,7 @@ function SearchTrigger() {
       type="button"
       onClick={() => setPaletteOpen(true)}
       aria-keyshortcuts="Control+K Meta+K"
-      className="flex h-9 w-full max-w-md min-w-0 items-center gap-2 rounded-control border border-border-strong bg-canvas px-3 text-body text-fg-muted hover:border-border-control"
+      className="flex h-9 w-full max-w-md min-w-0 items-center gap-2 rounded-control border border-border-strong bg-canvas/70 px-3 text-body text-fg-muted transition-[border-color,box-shadow,background-color] duration-(--ap-duration-panel) hover:border-border-control hover:bg-surface hover:shadow-card"
     >
       <Search aria-hidden="true" className="size-4 shrink-0" />
       <span className="truncate">Search customers, licenses, deployments…</span>
@@ -77,7 +79,7 @@ function Notifications({ tasks }: { tasks: Task[] }) {
         {urgent.length > 0 ? (
           <span
             aria-hidden="true"
-            className="absolute end-1.5 top-1.5 size-2 rounded-full bg-coral ring-2 ring-surface"
+            className="absolute end-1.5 top-1.5 size-2 rounded-full bg-coral ring-2 ring-surface before:absolute before:inset-0 before:animate-ping-soft before:rounded-full before:bg-coral"
           />
         ) : null}
       </Popover.Trigger>
@@ -194,7 +196,7 @@ export function TopBar({
 }) {
   const { setMobileNavOpen } = useShell();
   return (
-    <header className="sticky top-0 z-(--z-nav) flex h-topbar shrink-0 items-center gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur-sm md:px-6">
+    <header className="sticky top-0 z-(--z-nav) flex h-topbar shrink-0 items-center gap-3 border-b border-border/80 bg-surface/80 px-4 backdrop-blur-xl backdrop-saturate-150 md:px-6">
       <button
         type="button"
         onClick={() => setMobileNavOpen(true)}

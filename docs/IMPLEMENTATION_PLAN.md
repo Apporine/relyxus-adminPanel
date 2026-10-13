@@ -107,6 +107,9 @@ Design-track pages switch from fixtures to the API phase by phase by replacing t
 - **Focus**: 2 px Accent Cyan outer ring with a 2 px Ink inner outline, so focus is visible on both Canvas and Ink surfaces (§32).
 - **Status** always pairs text and icon with color (§6 accessibility rule). Health: Healthy (Cyan), Watch (neutral), At risk (Coral outline), Critical (Coral fill, Ink text).
 - **Charts** are small SVG components: one Violet series, neutral comparisons, Cyan for selection, Coral only for risk. No more than five saturated colors per chart (§8.1).
+- **Motion**: restrained and CSS only. Pages and card grids rise in with a short stagger, charts draw and grow from their baseline, dialogs and popovers pop from their trigger. Entrances fill backwards only so no transform lingers. `prefers-reduced-motion` removes durations, delays and loops.
+- **Scrollbars** are hidden app-wide. Horizontal scrollers keep overflow discoverable with scroll-driven edge fades, and remain keyboard scrollable (focusable labelled regions).
+- **Surfaces**: a faint Violet and Cyan aurora sits behind the top of the workspace and the Ink navigation; interactive cards lift on hover with a Violet to Cyan hairline. Decorative layers never carry meaning and stay behind content.
 - **Production environment badge**: Ink surface, Coral indicator, explicit "PRODUCTION" text (§7).
 - **Desktop first**: primary 1440 px, supported from 1024 px; below that the app is read-only emergency access (§32).
 

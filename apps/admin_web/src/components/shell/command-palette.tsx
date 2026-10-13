@@ -106,8 +106,8 @@ export function CommandPalette({ index }: { index: SearchResult[] }) {
       }}
     >
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-(--z-palette) bg-ink/40" />
-        <DialogPrimitive.Content className="fixed start-1/2 top-[10vh] z-(--z-palette) w-[calc(100vw-2rem)] max-w-2xl -translate-x-1/2 overflow-hidden rounded-dialog border border-border bg-surface shadow-overlay rtl:translate-x-1/2">
+        <DialogPrimitive.Overlay className="fixed inset-0 z-(--z-palette) bg-ink/40 backdrop-blur-[3px] data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
+        <DialogPrimitive.Content className="fixed start-1/2 top-[10vh] z-(--z-palette) w-[calc(100vw-2rem)] max-w-2xl -translate-x-1/2 overflow-hidden rounded-dialog border border-border bg-surface shadow-overlay data-[state=closed]:animate-pop-out data-[state=open]:animate-pop rtl:translate-x-1/2">
           <DialogPrimitive.Title className="sr-only">Search and commands</DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">
             Search customers, licenses, deployments, contracts, contacts and releases, or run a

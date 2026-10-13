@@ -9,7 +9,7 @@ export function TabsList({ className, ...props }: React.ComponentProps<typeof Ta
   return (
     <TabsPrimitive.List
       className={cn(
-        "flex [scrollbar-width:none] items-end gap-1 overflow-x-auto border-b border-border",
+        "flex scroll-fade-x items-end gap-1 overflow-x-auto border-b border-border",
         className,
       )}
       {...props}
@@ -26,7 +26,8 @@ export function TabsTrigger({
     <TabsPrimitive.Trigger
       className={cn(
         "relative -mb-px inline-flex h-10 shrink-0 items-center gap-1.5 border-b-2 border-transparent px-3 text-body font-medium whitespace-nowrap text-fg-muted",
-        "hover:text-fg data-[state=active]:border-violet data-[state=active]:text-fg",
+        "transition-[color,border-color] duration-(--ap-duration-panel) hover:border-border-strong hover:text-fg",
+        "data-[state=active]:border-violet data-[state=active]:text-fg",
         className,
       )}
       {...props}

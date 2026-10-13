@@ -45,7 +45,7 @@ export function CustomerTabNav({
               aria-current={tab.id === active ? "page" : undefined}
               scroll={false}
               className={cn(
-                "inline-flex h-10 items-center border-b-2 border-transparent px-2.5 text-body font-medium whitespace-nowrap text-fg-muted hover:text-fg",
+                "inline-flex h-10 items-center border-b-2 border-transparent px-2.5 text-body font-medium whitespace-nowrap text-fg-muted transition-[color,border-color] duration-(--ap-duration-panel) hover:border-border-strong hover:text-fg",
                 "aria-[current=page]:border-violet aria-[current=page]:text-fg",
               )}
             >

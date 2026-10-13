@@ -9,15 +9,18 @@ import { cn } from "@/lib/cn";
 export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-control font-semibold whitespace-nowrap",
-    "transition-colors duration-(--ap-duration-fast) ease-standard",
+    "transition-[color,background-color,border-color,box-shadow,transform] duration-(--ap-duration-fast) ease-standard",
+    "active:scale-[0.97]",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "[&_svg]:size-4 [&_svg]:shrink-0",
   ],
   {
     variants: {
       variant: {
-        primary: "bg-violet text-white hover:bg-violet-hover",
-        secondary: "border border-ink bg-canvas text-ink hover:bg-surface-hover",
+        primary:
+          "bg-violet text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18)] hover:bg-violet-hover hover:shadow-glow",
+        secondary:
+          "border border-ink bg-canvas text-ink hover:bg-surface hover:shadow-[0_4px_12px_-6px_rgb(17_10_36/0.35)]",
         ghost: "text-fg-secondary hover:bg-surface-hover hover:text-fg",
         destructive: "bg-coral text-ink hover:bg-coral/85",
         link: "h-auto px-0 text-violet-text underline-offset-4 hover:underline",

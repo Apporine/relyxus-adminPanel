@@ -74,6 +74,8 @@ Conventions:
 - Business rules live in `src/domain` as pure functions with unit tests.
 - Status always shows text or an icon alongside color. Button labels and dialog copy follow spec §31.
 - Money stays per currency; values are never converted without an approved FX source.
+- Motion is CSS only: pages and card grids rise in (`stagger`), charts draw and grow, overlays pop. Everything collapses under `prefers-reduced-motion`, which the E2E suite runs with so axe never measures text mid-fade.
+- Scrollbars are hidden. Horizontal scrollers (tables, tab rows) use `scroll-fade-x`, a scroll-driven edge fade that appears only while there is more to scroll.
 
 ## Quality gates
 
@@ -85,4 +87,4 @@ Conventions:
 
 ## Branching
 
-`main` is production, `develop` is integration. All work lands via a `feat/*`, `fix/*`, `docs/*` or `chore/*` branch and a pull request into `develop`. While earlier pull requests await review, feature pull requests are stacked: merge them in order and GitHub retargets each one to `develop`. Releases are pull requests from `develop` into `main`.
+`main` is production, `develop` is integration. All work lands via a `feat/*`, `fix/*`, `docs/*` or `chore/*` branch and a pull request into `develop`. Each pull request merges into `develop` with a merge commit once CI passes. Releases are pull requests from `develop` into `main`.

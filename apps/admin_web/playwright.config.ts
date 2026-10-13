@@ -14,6 +14,9 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
+    // Entrance animations fade content in; axe would measure contrast mid-fade. Motion
+    // itself is covered by motion.spec.ts, which opts back in.
+    contextOptions: { reducedMotion: "reduce" },
   },
   projects: [
     {

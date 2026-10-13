@@ -36,6 +36,8 @@ export function Sparkline({
     >
       <path
         d={path}
+        pathLength={1}
+        className="chart-draw"
         fill="none"
         stroke={color}
         strokeWidth={2}
@@ -71,7 +73,7 @@ export function SegmentedBar({ segments, className }: { segments: Segment[]; cla
     <div
       aria-hidden="true"
       className={cn(
-        "flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full bg-surface-sunken",
+        "flex h-2.5 w-full animate-reveal-x gap-0.5 overflow-hidden rounded-full bg-surface-sunken",
         className,
       )}
     >
@@ -111,7 +113,7 @@ export function BarList({ items, max }: { items: BarListItem[]; max?: number }) 
   const ceiling = max ?? Math.max(...items.map((i) => i.value), 1);
   return (
     <ul className="flex flex-col gap-1">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <li key={item.key}>
           <Link
             href={item.href}
@@ -127,8 +129,9 @@ export function BarList({ items, max }: { items: BarListItem[]; max?: number }) 
             <span className="flex items-center gap-2">
               <span
                 aria-hidden="true"
-                className="h-3 rounded-e-[4px]"
+                className="h-3 chart-grow-x rounded-e-[4px]"
                 style={{
+                  ["--ap-delay" as string]: `${index * 60}ms`,
                   width: `${Math.max(2, (item.value / ceiling) * 75)}%`,
                   background: item.risk ? "var(--ap-chart-risk)" : "var(--ap-chart-primary)",
                 }}

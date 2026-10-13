@@ -144,6 +144,8 @@ export function LineChart({
             <g key={s.key}>
               <path
                 d={path}
+                pathLength={1}
+                className="chart-draw"
                 fill="none"
                 stroke={s.color}
                 strokeWidth={2}
