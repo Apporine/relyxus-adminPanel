@@ -85,7 +85,7 @@ describe("records", () => {
     expect((await listTasks()).length).toBeGreaterThan(0);
     expect((await listCostSnapshots()).length).toBeGreaterThan(0);
     expect((await listHealthHistory()).length).toBe(6);
-    expect((await listSupportCases("cus_atlas")).length).toBe(2);
+    expect((await listSupportCases("cus_atlas")).length).toBe(3);
     expect((await listSupportCases()).length).toBeGreaterThan(2);
     expect((await listSuccessMilestones("cus_halden")).length).toBe(2);
     expect((await listSuccessMilestones()).length).toBeGreaterThan(2);
