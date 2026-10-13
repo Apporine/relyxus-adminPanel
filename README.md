@@ -27,7 +27,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 
 ## Getting started
 
-Requires pnpm 10 (it switches itself to the version in `packageManager`). Node 24 LTS is pinned through `devEngines.runtime` in `package.json`: pnpm downloads it and runs every project script on it, whatever Node is installed globally. `engines.node` (`24.x`) tells hosting platforms such as Vercel which Node to use.
+Requires pnpm 10 (it switches itself to the version in `packageManager`). Node 24 LTS is pinned through `useNodeVersion` in `pnpm-workspace.yaml`: pnpm downloads it and runs every project script on it, whatever Node is installed globally. `engines.node` (`24.x`) tells hosting platforms such as Vercel which Node to use.
 
 Deploying on Vercel: set the project Root Directory to `apps/admin_web`; the framework preset is Next.js.
 

@@ -5,3 +5,7 @@ packages:
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# Node for every pnpm script, downloaded by pnpm. Hosts read engines.node instead
+# (Vercel rejects use-node-version in .npmrc).
+useNodeVersion: 24.21.0

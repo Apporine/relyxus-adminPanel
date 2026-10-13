@@ -5,13 +5,6 @@
   "engines": {
     "node": "24.x"
   },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24.21.0",
-      "onFail": "download"
-    }
-  },
   "scripts": {
     "dev": "pnpm --filter admin_web dev",
     "build": "pnpm --filter admin_web build",
