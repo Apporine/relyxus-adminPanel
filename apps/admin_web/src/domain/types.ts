@@ -1,0 +1,336 @@
+/**
+ * Control plane domain types (spec §36). Identifiers are stable opaque strings, never
+ * names. Timestamps are ISO 8601 UTC strings; money is integer minor units.
+ */
+
+export type Iso = string;
+
+export type CurrencyCode = "GBP" | "USD" | "EUR";
+
+export interface Money {
+  amountMinor: number;
+  currency: CurrencyCode;
+}
+
+export type Environment = "PRODUCTION" | "STAGING" | "DEVELOPMENT";
+
+// Staff and access ------------------------------------------------------------------
+
+export type RoleKey =
+  | "executive_viewer"
+  | "portfolio_admin"
+  | "customer_operations"
+  | "customer_success"
+  | "commercial_operations"
+  | "finance_viewer"
+  | "license_operator"
+  | "license_approver"
+  | "release_manager"
+  | "support_engineer"
+  | "security_admin"
+  | "auditor"
+  | "platform_admin";
+
+export interface StaffUser {
+  id: string;
+  name: string;
+  email: string;
+  title: string;
+  roles: RoleKey[];
+  /** Product scope; empty means all products. */
+  productScope: string[];
+  mfaEnabled: boolean;
+  lastSignInAt: Iso;
+}
+
+// Products ----------------------------------------------------------------------------
+
+export type ProductStatus = "active" | "pilot" | "planned" | "retired";
+
+export interface Product {
+  id: string;
+  code: string;
+  name: string;
+  status: ProductStatus;
+  ownerId: string;
+  supportModel: string;
+  currentReleaseTrain: string;
+}
+
+// Customers ---------------------------------------------------------------------------
+
+export type LifecycleStage =
+  | "commercial_handoff"
+  | "security_review"
+  | "architecture_discovery"
+  | "pilot_ready"
+  | "deployment_ready"
+  | "go_live"
+  | "stable"
+  | "renewal"
+  | "offboarding";
+
+export type HealthStatus = "healthy" | "watch" | "at_risk" | "critical";
+
+export type AccountStatus = "active" | "onboarding" | "suspended" | "churned";
+
+export type Segment = "enterprise" | "mid_market" | "public_sector";
+
+export type Region = "UK" | "EU" | "North America" | "Middle East" | "APAC";
+
+export type OwnerRole =
+  | "executive_sponsor"
+  | "commercial_owner"
+  | "customer_success_owner"
+  | "technical_owner"
+  | "support_owner"
+  | "security_owner";
+
+export interface Customer {
+  id: string;
+  displayName: string;
+  legalName: string;
+  status: AccountStatus;
+  parentId?: string;
+  segment: Segment;
+  industry: string;
+  headquartersCountry: string;
+  region: Region;
+  website: string;
+  lifecycleStage: LifecycleStage;
+  customerSince: Iso;
+  goLiveAt?: Iso;
+  nextRenewalAt?: Iso;
+  health: HealthStatus;
+  /** Active annual contract value; absent when no approved commercial record exists. */
+  annualContractValue?: Money;
+  supportTier: "standard" | "premium" | "mission_critical";
+  owners: Partial<Record<OwnerRole, string>>;
+  productIds: string[];
+  deploymentModel: "customer_hosted" | "apporine_managed";
+  dataResidency: string;
+  lastActivityAt: Iso;
+  references: { crmId?: string; financeId?: string; supportId?: string };
+}
+
+export type ContactRole =
+  "executive" | "commercial" | "technical" | "security" | "support" | "billing";
+
+export interface Contact {
+  id: string;
+  customerId: string;
+  name: string;
+  title: string;
+  email: string;
+  roles: ContactRole[];
+  timezone: string;
+  preferredChannel: "email" | "phone" | "teams" | "slack";
+  active: boolean;
+  verified: boolean;
+}
+
+// Commercial --------------------------------------------------------------------------
+
+export type ContractStatus = "draft" | "active" | "renewing" | "expired" | "terminated";
+
+export type RenewalStage =
+  "not_started" | "discovery" | "proposal" | "negotiation" | "committed" | "renewed" | "lost";
+
+export interface Contract {
+  id: string;
+  number: string;
+  customerId: string;
+  productIds: string[];
+  status: ContractStatus;
+  effectiveAt: Iso;
+  endsAt: Iso;
+  noticeDays: number;
+  renewalType: "auto" | "manual";
+  annualContractValue: Money;
+  billingFrequency: "annual" | "quarterly";
+  purchaseOrderRef?: string;
+  renewalStage: RenewalStage;
+  renewalOwnerId: string;
+}
+
+// Licensing ---------------------------------------------------------------------------
+
+export type LicenseState =
+  "active" | "grace" | "expired" | "suspended" | "revoked" | "superseded" | "verification_failed";
+
+export interface EntitlementValue {
+  key: string;
+  label: string;
+  value: string;
+}
+
+export interface LicenseRevision {
+  revision: number;
+  issuedAt: Iso;
+  issuedById: string;
+  approvedById: string;
+  signingKeyId: string;
+  payloadHash: string;
+  reason: string;
+  entitlements: EntitlementValue[];
+}
+
+export interface License {
+  id: string;
+  customerId: string;
+  productId: string;
+  contractId: string;
+  state: LicenseState;
+  validFrom: Iso;
+  expiresAt: Iso;
+  graceDays: number;
+  deploymentAllowance: number;
+  deliveryState: "pending" | "delivered" | "acknowledged" | "offline_package";
+  artifactFingerprint: string;
+  lastVerificationAt?: Iso;
+  revisions: LicenseRevision[];
+}
+
+// Deployments and releases ------------------------------------------------------------
+
+export type DeploymentEnvironment = "production" | "staging" | "dr";
+
+export type SupportState =
+  "supported" | "review_needed" | "unsupported" | "stale_check_in" | "license_mismatch" | "unknown";
+
+export interface Deployment {
+  id: string;
+  customerId: string;
+  productId: string;
+  logicalName: string;
+  environment: DeploymentEnvironment;
+  platform: "AWS" | "Azure" | "Google Cloud" | "OpenShift" | "On premises";
+  kubernetes: string;
+  region: string;
+  releaseVersion: string;
+  licenseId?: string;
+  supportState: SupportState;
+  lastCheckInAt?: Iso;
+  technicalOwnerId: string;
+}
+
+export type ReleaseStatus =
+  "draft" | "tested" | "approved" | "released" | "deprecated" | "end_of_support";
+
+export interface Release {
+  id: string;
+  productId: string;
+  version: string;
+  status: ReleaseStatus;
+  releasedAt?: Iso;
+  endOfSupportAt?: Iso;
+  ociDigest: string;
+  helmChartVersion: string;
+}
+
+// Governance --------------------------------------------------------------------------
+
+export type ApprovalType =
+  | "license_issue"
+  | "license_renew"
+  | "license_revoke"
+  | "license_suspend"
+  | "entitlement_change"
+  | "signing_key_rotation"
+  | "break_glass"
+  | "security_policy_change";
+
+export type ApprovalState = "pending" | "approved" | "rejected" | "expired" | "cancelled";
+
+export interface ChangeLine {
+  field: string;
+  before: string;
+  after: string;
+}
+
+export interface ApprovalRequest {
+  id: string;
+  type: ApprovalType;
+  state: ApprovalState;
+  highImpact: boolean;
+  requesterId: string;
+  /** Staff who must not decide this request (segregation of duties). */
+  excludedApproverIds: string[];
+  approverIds: string[];
+  decidedById?: string;
+  decidedAt?: Iso;
+  decisionReason?: string;
+  customerId?: string;
+  productId?: string;
+  targetType: "license" | "entitlement" | "signing_key" | "staff" | "policy";
+  targetId: string;
+  title: string;
+  reason: string;
+  impact: string[];
+  diff: ChangeLine[];
+  policy: string[];
+  requiresStepUp: boolean;
+  createdAt: Iso;
+  expiresAt: Iso;
+}
+
+export type AuditResult = "success" | "failure" | "denied";
+
+export interface AuditEvent {
+  id: string;
+  at: Iso;
+  actorId: string;
+  action: string;
+  actionLabel: string;
+  objectType: string;
+  objectId: string;
+  customerId?: string;
+  productId?: string;
+  result: AuditResult;
+  reason?: string;
+  requestId: string;
+  correlationId: string;
+  source: "web" | "api" | "automation";
+  highImpact: boolean;
+}
+
+// Work --------------------------------------------------------------------------------
+
+export type TaskKind =
+  | "license_expiry"
+  | "renewal"
+  | "failed_refresh"
+  | "unsupported_deployment"
+  | "missing_owner"
+  | "overdue_onboarding"
+  | "approval";
+
+export type Priority = "critical" | "high" | "medium" | "low";
+
+export interface Task {
+  id: string;
+  kind: TaskKind;
+  title: string;
+  priority: Priority;
+  customerId?: string;
+  ownerId: string;
+  dueAt: Iso;
+  href: string;
+}
+
+// Economics ---------------------------------------------------------------------------
+
+export interface CostSnapshot {
+  month: string;
+  productId: string;
+  cloudCost: Money;
+  supportHours: number;
+}
+
+export interface HealthSnapshot {
+  month: string;
+  healthy: number;
+  watch: number;
+  atRisk: number;
+  critical: number;
+}
