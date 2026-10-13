@@ -21,6 +21,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 | Approvals                       | `/approvals` queue (Mine, Team, High impact, Expiring, Decided, All), `/approvals/[id]` detail, `/approvals/decisions`                               | Done    |
 | Deployments and releases        | `/deployments` fleet, heatmap, upgrade readiness, `/deployments/[id]`; `/releases` list, compatibility matrix, `/releases/[id]` with customer impact | Done    |
 | Commercial and entitlements     | `/commercial` contracts, `/commercial/contracts/[id]`, renewal radar and workspace, entitlement definitions, customer entitlements, drift review     | Done    |
+| Products                        | `/products` portfolio, `/products/[id]` overview, entitlement catalog, customers and release train                                                   | Done    |
 | All other modules               | Routed placeholders that list each module's planned screens                                                                                          | Planned |
 
 ## Getting started

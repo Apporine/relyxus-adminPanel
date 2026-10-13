@@ -16,6 +16,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "1",
     description: "Production and disaster recovery installations the customer may run.",
     lifecycle: "active",
+    securityClassification: "internal",
     comparison: "allowance",
   },
   {
@@ -28,6 +29,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "2",
     description: "Staging, test and training installations.",
     lifecycle: "active",
+    securityClassification: "internal",
     comparison: "allowance",
   },
   {
@@ -41,6 +43,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "standard",
     description: "Response targets and escalation path for support cases.",
     lifecycle: "active",
+    securityClassification: "public",
     comparison: "exact",
   },
   {
@@ -54,6 +57,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "Not included",
     description: "Payment routing recommendations. Commercial add-on.",
     lifecycle: "active",
+    securityClassification: "confidential",
     comparison: "exact",
   },
   {
@@ -67,6 +71,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "Not included",
     description: "Prebuilt regulator report templates. Commercial add-on.",
     lifecycle: "active",
+    securityClassification: "confidential",
     comparison: "exact",
   },
   {
@@ -79,6 +84,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "false",
     description: "Replaced by audit export to object storage in 2.3. Not offered on new contracts.",
     lifecycle: "deprecated",
+    securityClassification: "internal",
     comparison: "exact",
   },
   {
@@ -91,6 +97,7 @@ export const entitlementDefinitions: EntitlementDefinition[] = [
     defaultValue: "10",
     description: "Named analysts who may use Sentinel.",
     lifecycle: "draft",
+    securityClassification: "internal",
     comparison: "allowance",
   },
 ];
