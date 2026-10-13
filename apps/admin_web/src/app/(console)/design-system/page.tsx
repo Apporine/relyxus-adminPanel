@@ -96,7 +96,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function DesignSystemPage() {
   return (
-    <main id="main-content" className="mx-auto flex max-w-6xl flex-col gap-12 px-8 py-10">
+    <div className="mx-auto flex max-w-6xl flex-col gap-12">
       <PageHeader
         title="Design system"
         description="Apporine control plane tokens and components. Quiet enterprise confidence: neutral surfaces dominate, Violet marks action, Cyan marks technical focus or healthy state, Coral marks risk."
@@ -331,6 +331,6 @@ export default function DesignSystemPage() {
           </Card>
         </div>
       </Section>
-    </main>
+    </div>
   );
 }
