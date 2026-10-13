@@ -29,7 +29,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 
 Requires pnpm 10 (it switches itself to the version in `packageManager`). Node 24 LTS is pinned through `useNodeVersion` in `pnpm-workspace.yaml`: pnpm downloads it and runs every project script on it, whatever Node is installed globally. `engines.node` (`24.x`) tells hosting platforms such as Vercel which Node to use.
 
-Deploying on Vercel: set the project Root Directory to `apps/admin_web`; the framework preset is Next.js.
+Deploying on Vercel: no dashboard setup is needed. The root `vercel.json` sets the Next.js preset, builds `admin_web` and points the output at `apps/admin_web/.next`. `next` is also a root devDependency because Vercel looks for it in the root `package.json`. Keep the project Root Directory as the repository root.
 
 ```sh
 pnpm install
