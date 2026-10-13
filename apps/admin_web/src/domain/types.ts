@@ -764,3 +764,52 @@ export interface SecuritySignalWeek {
   revokeRequests: number;
   openFindings: number;
 }
+
+// Financial intelligence (spec §22) ------------------------------------------------------
+
+/** Finance-approved conversion rates; amounts are never converted without one (spec §22). */
+export interface FxRates {
+  source: string;
+  asOf: Iso;
+  /** GBP per one unit of each currency. */
+  toGbp: Record<CurrencyCode, number>;
+}
+
+/** Approved blended labor rates used to cost support and operations time. */
+export interface LaborRates {
+  source: string;
+  supportPerHour: Money;
+  operationsPerHour: Money;
+}
+
+/** How a cloud cost line is tagged: to one customer, to one product, or not at all. */
+export type CostTag = "customer" | "product" | "untagged";
+
+/** Apporine cloud cost line from the AWS cost export, by account and tags. */
+export interface CloudCostLine {
+  month: string;
+  account: string;
+  service: string;
+  tag: CostTag;
+  productId?: string;
+  customerId?: string;
+  amount: Money;
+}
+
+/** Approved support and operations time per customer per month. */
+export interface ServiceTime {
+  month: string;
+  customerId: string;
+  supportHours: number;
+  operationsHours: number;
+}
+
+/** External source behind finance figures and its freshness. */
+export interface CostSource {
+  id: string;
+  name: string;
+  system: string;
+  covers: string;
+  state: "current" | "delayed" | "unavailable";
+  lastSyncedAt: Iso;
+}

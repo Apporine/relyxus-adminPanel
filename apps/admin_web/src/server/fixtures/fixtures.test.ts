@@ -1,7 +1,8 @@
 import { canonicalPayload, hashPayload } from "@/domain/artifact";
 import { verifyAuditChain } from "@/domain/audit";
 import { auditDaily, auditEvents } from "./audit";
-import { approvals, healthHistory, tasks } from "./operations";
+import { cloudCostLines, COST_MONTH, serviceTime } from "./finance";
+import { approvals, costSnapshots, healthHistory, tasks } from "./operations";
 import { contracts, deployments, licenses } from "./commercial";
 import { contacts, customers } from "./customers";
 import { apiClients } from "./security";
@@ -106,6 +107,18 @@ describe("fixture integrity", () => {
         expect(signIns.some((e) => e.at === person.lastSignInAt)).toBe(true);
       }
     }
+  });
+
+  it("finance inputs reconcile to the product cost snapshots", () => {
+    const month = costSnapshots.filter((s) => s.month === COST_MONTH);
+    // Untagged lines carry no product, so cloud cost reconciles at the monthly total.
+    expect(cloudCostLines.reduce((sum, l) => sum + l.amount.amountMinor, 0)).toBe(
+      month.reduce((sum, s) => sum + s.cloudCost.amountMinor, 0),
+    );
+    expect(serviceTime.reduce((sum, t) => sum + t.supportHours, 0)).toBe(
+      month.reduce((sum, s) => sum + s.supportHours, 0),
+    );
+    for (const t of serviceTime) expect(customerIds).toContain(t.customerId);
   });
 
   it("records the real payload hash for every license revision", async () => {

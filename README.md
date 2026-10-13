@@ -25,6 +25,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 | Success and support             | `/success` health overview, customer health detail, success plans, QBRs, risk register, onboarding board; `/success/support` cases, escalation workspace, SLA report | Done    |
 | Security                        | `/security` posture, staff access, roles and role detail, access reviews, API clients, signing keys, break glass, sensitive data access                              | Done    |
 | Audit                           | `/audit` log with synchronized analytics, filters and event drawer; `/audit/analytics`; `/audit/exports` export center with hash chain verification                  | Done    |
+| Finance                         | `/analytics/finance` commercial summary, cost to serve with allocation views, margin estimate ranges, cost attribution                                               | Done    |
 | All other modules               | Routed placeholders that list each module's planned screens                                                                                                          | Planned |
 
 ## Getting started
