@@ -238,6 +238,7 @@
   --animate-fade-out: ap-fade 140ms var(--ap-ease-standard) reverse forwards;
   --animate-pop: ap-pop 240ms var(--ap-ease-emphasized) backwards;
   --animate-pop-out: ap-pop 140ms var(--ap-ease-standard) reverse forwards;
+  --animate-drawer-in: ap-drawer 260ms var(--ap-ease-emphasized) backwards;
   --animate-reveal-x: ap-reveal-x 900ms var(--ap-ease-emphasized) backwards;
   --animate-shimmer: ap-shimmer 1.6s linear infinite;
   --animate-ping-soft: ap-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -261,6 +262,13 @@
   from {
     opacity: 0;
     transform: translateY(6px) scale(0.97);
+  }
+}
+
+@keyframes ap-drawer {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
   }
 }
 

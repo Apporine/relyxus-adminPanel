@@ -11,6 +11,8 @@ import type {
   AccessReviewCampaign,
   ApiClient,
   AuditEvent,
+  AuditExport,
+  AuditStreamStatus,
   BreakGlassActivation,
   Contact,
   Contract,
@@ -38,6 +40,13 @@ import type {
   Task,
 } from "@/domain/types";
 import type { SearchResult } from "@/domain/search";
+import {
+  auditDaily,
+  auditEvents,
+  auditExports,
+  auditStream,
+  auditSummary,
+} from "../fixtures/audit";
 import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
 import {
@@ -47,9 +56,6 @@ import {
 } from "../fixtures/entitlements";
 import {
   approvals,
-  auditDaily,
-  auditEvents,
-  auditSummary,
   costImport,
   crmSync,
   costSnapshots,
@@ -196,6 +202,19 @@ export async function getApproval(id: string): Promise<ApprovalRequest | undefin
 
 export async function listAuditEvents(customerId?: string): Promise<AuditEvent[]> {
   return customerId ? auditEvents.filter((e) => e.customerId === customerId) : auditEvents;
+}
+
+export async function getAuditEvent(id: string): Promise<AuditEvent | undefined> {
+  return auditEvents.find((e) => e.id === id);
+}
+
+/** SIEM stream delivery state (spec §24). */
+export async function getAuditStream(): Promise<AuditStreamStatus> {
+  return auditStream;
+}
+
+export async function listAuditExports(): Promise<AuditExport[]> {
+  return auditExports;
 }
 
 export async function listTasks(): Promise<Task[]> {
