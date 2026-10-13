@@ -52,7 +52,7 @@ export function LicenseTabs({
               href={`/licensing/${licenseId}?tab=${tab.id}${revision ? `&rev=${revision}` : ""}`}
               aria-current={tab.id === active ? "page" : undefined}
               scroll={false}
-              className="inline-flex h-10 items-center border-b-2 border-transparent px-2.5 text-body font-medium text-fg-muted hover:text-fg aria-[current=page]:border-violet aria-[current=page]:text-fg"
+              className="inline-flex h-10 items-center border-b-2 border-transparent px-2.5 text-body font-medium text-fg-muted transition-[color,border-color] duration-(--ap-duration-panel) hover:border-border-strong hover:text-fg aria-[current=page]:border-violet aria-[current=page]:text-fg"
             >
               {tab.label}
             </Link>

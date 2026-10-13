@@ -1,8 +1,12 @@
 import {
+  Banknote,
+  CalendarClock,
   ClipboardPlus,
   Download,
   FilePlus2,
+  HeartPulse,
   KeyRound,
+  LifeBuoy,
   Pencil,
   Server,
   UserPlus,
@@ -73,82 +77,6 @@ export function Customer360Header({ data }: { data: Customer360 }) {
           actions={
             <>
               <DesignPreviewDialog
-                trigger="Edit customer"
-                triggerIcon={<Pencil aria-hidden="true" />}
-                title="Edit customer"
-                description="Update operating details. Fields synchronised from the CRM are read-only here and change in the CRM."
-                confirmLabel="Save changes"
-              >
-                <Field>
-                  <Label htmlFor="edit-display">Display name</Label>
-                  <Input
-                    id="edit-display"
-                    name="displayName"
-                    defaultValue={customer.displayName}
-                    required
-                  />
-                </Field>
-                <Field>
-                  <Label htmlFor="edit-legal">Legal name</Label>
-                  <Input
-                    id="edit-legal"
-                    name="legalName"
-                    defaultValue={customer.legalName}
-                    readOnly
-                    aria-describedby="edit-legal-hint"
-                  />
-                  <FieldHint id="edit-legal-hint">Owned by the CRM.</FieldHint>
-                </Field>
-                <ReasonField id="edit-reason" />
-              </DesignPreviewDialog>
-              <DesignPreviewDialog
-                trigger="Add contact"
-                triggerIcon={<UserPlus aria-hidden="true" />}
-                title="Add contact"
-                description="Add a customer contact with a clear responsibility. Contact changes appear in the customer timeline."
-                confirmLabel="Add contact"
-              >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field>
-                    <Label htmlFor="contact-name">Name</Label>
-                    <Input id="contact-name" name="name" required autoComplete="off" />
-                  </Field>
-                  <Field>
-                    <Label htmlFor="contact-email">Email</Label>
-                    <Input
-                      id="contact-email"
-                      name="email"
-                      type="email"
-                      required
-                      autoComplete="off"
-                    />
-                  </Field>
-                </div>
-                <Field>
-                  <Label htmlFor="contact-role">Responsibility</Label>
-                  <Select id="contact-role" name="role" defaultValue="technical">
-                    <option value="executive">Executive</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="technical">Technical</option>
-                    <option value="security">Security</option>
-                    <option value="support">Support</option>
-                    <option value="billing">Billing</option>
-                  </Select>
-                </Field>
-              </DesignPreviewDialog>
-              <DesignPreviewDialog
-                trigger="Add contract"
-                triggerIcon={<FilePlus2 aria-hidden="true" />}
-                title="Create contract record"
-                description="Create the operating contract record and link the approved source document or external system reference."
-                confirmLabel="Create contract"
-              >
-                <Field>
-                  <Label htmlFor="contract-ref">Source document or system reference</Label>
-                  <Input id="contract-ref" name="reference" required />
-                </Field>
-              </DesignPreviewDialog>
-              <DesignPreviewDialog
                 trigger="Issue license request"
                 triggerIcon={<KeyRound aria-hidden="true" />}
                 title="Issue commercial license"
@@ -174,35 +102,6 @@ export function Customer360Header({ data }: { data: Customer360 }) {
                 <ReasonField id="issue-reason" />
               </DesignPreviewDialog>
               <DesignPreviewDialog
-                trigger="Add deployment"
-                triggerIcon={<Server aria-hidden="true" />}
-                title="Register deployment"
-                description="Register an authorized customer deployment. Do not enter customer secrets or production credentials."
-                confirmLabel="Add deployment"
-              >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field>
-                    <Label htmlFor="dep-name">Logical name</Label>
-                    <Input id="dep-name" name="logicalName" required />
-                  </Field>
-                  <Field>
-                    <Label htmlFor="dep-env">Environment</Label>
-                    <Select id="dep-env" name="environment" defaultValue="production">
-                      <option value="production">Production</option>
-                      <option value="staging">Staging</option>
-                      <option value="dr">Disaster recovery</option>
-                    </Select>
-                  </Field>
-                </div>
-              </DesignPreviewDialog>
-              <DesignPreviewDialog
-                trigger="Export dossier"
-                triggerIcon={<Download aria-hidden="true" />}
-                title="Export customer dossier"
-                description="The export contains only fields you are authorized to view. The export event is recorded in audit."
-                confirmLabel="Export dossier"
-              />
-              <DesignPreviewDialog
                 trigger="Create task"
                 triggerVariant="primary"
                 triggerIcon={<ClipboardPlus aria-hidden="true" />}
@@ -222,6 +121,121 @@ export function Customer360Header({ data }: { data: Customer360 }) {
             </>
           }
         />
+        <div
+          role="group"
+          aria-label="More customer actions"
+          className="mt-4 flex w-fit max-w-full flex-wrap items-center gap-0.5 rounded-card border border-border bg-surface/70 p-1 shadow-card backdrop-blur-sm"
+        >
+          <DesignPreviewDialog
+            triggerVariant="ghost"
+            triggerSize="sm"
+            trigger="Edit customer"
+            triggerIcon={<Pencil aria-hidden="true" />}
+            title="Edit customer"
+            description="Update operating details. Fields synchronised from the CRM are read-only here and change in the CRM."
+            confirmLabel="Save changes"
+          >
+            <Field>
+              <Label htmlFor="edit-display">Display name</Label>
+              <Input
+                id="edit-display"
+                name="displayName"
+                defaultValue={customer.displayName}
+                required
+              />
+            </Field>
+            <Field>
+              <Label htmlFor="edit-legal">Legal name</Label>
+              <Input
+                id="edit-legal"
+                name="legalName"
+                defaultValue={customer.legalName}
+                readOnly
+                aria-describedby="edit-legal-hint"
+              />
+              <FieldHint id="edit-legal-hint">Owned by the CRM.</FieldHint>
+            </Field>
+            <ReasonField id="edit-reason" />
+          </DesignPreviewDialog>
+          <DesignPreviewDialog
+            triggerVariant="ghost"
+            triggerSize="sm"
+            trigger="Add contact"
+            triggerIcon={<UserPlus aria-hidden="true" />}
+            title="Add contact"
+            description="Add a customer contact with a clear responsibility. Contact changes appear in the customer timeline."
+            confirmLabel="Add contact"
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <Label htmlFor="contact-name">Name</Label>
+                <Input id="contact-name" name="name" required autoComplete="off" />
+              </Field>
+              <Field>
+                <Label htmlFor="contact-email">Email</Label>
+                <Input id="contact-email" name="email" type="email" required autoComplete="off" />
+              </Field>
+            </div>
+            <Field>
+              <Label htmlFor="contact-role">Responsibility</Label>
+              <Select id="contact-role" name="role" defaultValue="technical">
+                <option value="executive">Executive</option>
+                <option value="commercial">Commercial</option>
+                <option value="technical">Technical</option>
+                <option value="security">Security</option>
+                <option value="support">Support</option>
+                <option value="billing">Billing</option>
+              </Select>
+            </Field>
+          </DesignPreviewDialog>
+          <DesignPreviewDialog
+            triggerVariant="ghost"
+            triggerSize="sm"
+            trigger="Add contract"
+            triggerIcon={<FilePlus2 aria-hidden="true" />}
+            title="Create contract record"
+            description="Create the operating contract record and link the approved source document or external system reference."
+            confirmLabel="Create contract"
+          >
+            <Field>
+              <Label htmlFor="contract-ref">Source document or system reference</Label>
+              <Input id="contract-ref" name="reference" required />
+            </Field>
+          </DesignPreviewDialog>
+          <DesignPreviewDialog
+            triggerVariant="ghost"
+            triggerSize="sm"
+            trigger="Add deployment"
+            triggerIcon={<Server aria-hidden="true" />}
+            title="Register deployment"
+            description="Register an authorized customer deployment. Do not enter customer secrets or production credentials."
+            confirmLabel="Add deployment"
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <Label htmlFor="dep-name">Logical name</Label>
+                <Input id="dep-name" name="logicalName" required />
+              </Field>
+              <Field>
+                <Label htmlFor="dep-env">Environment</Label>
+                <Select id="dep-env" name="environment" defaultValue="production">
+                  <option value="production">Production</option>
+                  <option value="staging">Staging</option>
+                  <option value="dr">Disaster recovery</option>
+                </Select>
+              </Field>
+            </div>
+          </DesignPreviewDialog>
+          <DesignPreviewDialog
+            triggerVariant="ghost"
+            triggerSize="sm"
+            trigger="Export dossier"
+            triggerIcon={<Download aria-hidden="true" />}
+            title="Export customer dossier"
+            description="The export contains only fields you are authorized to view. The export event is recorded in audit."
+            confirmLabel="Export dossier"
+          />
+        </div>
       </div>
       <Summary data={data} />
     </div>
@@ -237,10 +251,11 @@ function Summary({ data }: { data: Customer360 }) {
   return (
     <section
       aria-label="Customer summary"
-      className="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-6"
+      className="grid stagger grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-6"
     >
       <MetricCard
         label="Annual contract value"
+        icon={<Banknote />}
         value={
           customer.annualContractValue ? formatMoneyCompact(customer.annualContractValue) : "—"
         }
@@ -251,6 +266,7 @@ function Summary({ data }: { data: Customer360 }) {
       />
       <MetricCard
         label="Next renewal"
+        icon={<CalendarClock />}
         value={customer.nextRenewalAt ? formatDate(customer.nextRenewalAt) : "—"}
         detail={
           customer.nextRenewalAt
@@ -262,6 +278,7 @@ function Summary({ data }: { data: Customer360 }) {
       />
       <MetricCard
         label="Licenses"
+        icon={<KeyRound />}
         value={String(licenses.length)}
         detail={
           data.worstLicenseState === "active" ? (
@@ -280,6 +297,7 @@ function Summary({ data }: { data: Customer360 }) {
       />
       <MetricCard
         label="Deployments"
+        icon={<Server />}
         value={String(deployments.length)}
         detail={deployments.length ? `${supported} supported` : "None registered"}
         href={`${base}?tab=deployments`}
@@ -287,6 +305,7 @@ function Summary({ data }: { data: Customer360 }) {
       />
       <MetricCard
         label="Open support cases"
+        icon={<LifeBuoy />}
         value={String(openCases.length)}
         detail={
           openCases.length
@@ -298,6 +317,7 @@ function Summary({ data }: { data: Customer360 }) {
       />
       <MetricCard
         label="Health score"
+        icon={<HeartPulse />}
         value={`${data.score} / 100`}
         detail={`${data.factors.filter((f) => f.status === "risk" || f.status === "attention").length} factors need attention`}
         href={`${base}?tab=overview`}

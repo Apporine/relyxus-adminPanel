@@ -14,6 +14,7 @@ export function MetricCard({
   href,
   source,
   restricted = false,
+  icon,
   children,
   className,
 }: {
@@ -26,6 +27,8 @@ export function MetricCard({
   /** Human description of the source query, shown as a footnote. */
   source: string;
   restricted?: boolean;
+  /** Decorative icon shown in the card corner. */
+  icon?: React.ReactNode;
   /** Optional small visual: sparkline, aging bar or distribution. */
   children?: React.ReactNode;
   className?: string;
@@ -34,12 +37,25 @@ export function MetricCard({
     <section
       aria-label={label}
       className={cn(
-        "group relative flex min-h-36 flex-col rounded-card border border-border bg-surface p-4 shadow-card",
-        "focus-within:border-border-strong hover:border-border-strong",
+        "group relative flex min-h-32 flex-col overflow-hidden rounded-card border border-border bg-surface p-4 shadow-card",
+        "transition-[transform,box-shadow,border-color] duration-(--ap-duration-panel) ease-(--ap-ease-emphasized)",
+        "focus-within:border-border-strong hover:border-violet/30",
+        !restricted && "hover:-translate-y-0.5 hover:shadow-lift",
+        "before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-linear-to-r before:from-violet before:to-cyan before:opacity-0 before:transition-opacity before:duration-(--ap-duration-panel) hover:before:opacity-100",
         className,
       )}
     >
-      <h2 className="text-dense font-medium text-fg-muted">{label}</h2>
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="text-dense font-medium text-fg-muted">{label}</h2>
+        {icon ? (
+          <span
+            aria-hidden="true"
+            className="-me-1 -mt-1 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet-subtle text-violet-text transition-transform duration-(--ap-duration-panel) ease-(--ap-ease-emphasized) group-hover:scale-110 group-hover:-rotate-6 [&_svg]:size-4"
+          >
+            {icon}
+          </span>
+        ) : null}
+      </div>
       {restricted ? (
         <p className="mt-2 inline-flex items-center gap-1.5 text-body text-fg-muted">
           <Lock aria-hidden="true" className="size-4" />

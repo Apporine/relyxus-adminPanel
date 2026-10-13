@@ -188,7 +188,7 @@ export async function CommandCenter({
             financeScope={financeScope}
           />
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
-            <div className="grid min-w-0 content-start gap-6 lg:grid-cols-2">
+            <div className="grid min-w-0 stagger content-start gap-6 lg:grid-cols-2">
               <HealthCard
                 summary={summary}
                 history={healthTrend(history, filters.range)}

@@ -33,10 +33,11 @@ export function DialogContent({
 }: DialogContentProps) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-(--z-dialog) bg-ink/40" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-(--z-dialog) bg-ink/40 backdrop-blur-[3px] data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
       <DialogPrimitive.Content
         className={cn(
           "fixed start-1/2 top-[12vh] z-(--z-dialog) flex max-h-[76vh] w-[calc(100vw-2rem)] -translate-x-1/2 flex-col rounded-dialog border border-border bg-surface shadow-overlay rtl:translate-x-1/2",
+          "data-[state=closed]:animate-pop-out data-[state=open]:animate-pop",
           size === "md" ? "max-w-lg" : "max-w-2xl",
           className,
         )}

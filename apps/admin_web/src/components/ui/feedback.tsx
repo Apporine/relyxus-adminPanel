@@ -23,7 +23,7 @@ export function EmptyState({
       )}
     >
       {Icon ? (
-        <span className="mb-1 inline-flex size-10 items-center justify-center rounded-full bg-surface-sunken text-fg-muted">
+        <span className="relative mb-2 inline-flex size-12 items-center justify-center rounded-2xl bg-linear-to-br from-violet-subtle to-cyan-subtle text-violet-text shadow-[inset_0_0_0_1px_rgb(112_64_255/0.12)]">
           <Icon aria-hidden="true" className="size-5" />
         </span>
       ) : null}
@@ -38,7 +38,7 @@ export function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       aria-hidden="true"
-      className={cn("animate-pulse rounded-control bg-surface-sunken", className)}
+      className={cn("animate-shimmer rounded-control bg-surface-sunken shimmer", className)}
       {...props}
     />
   );

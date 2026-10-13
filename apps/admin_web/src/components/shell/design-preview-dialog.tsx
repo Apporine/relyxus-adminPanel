@@ -20,6 +20,7 @@ import { Notice } from "@/components/ui/feedback";
 export function DesignPreviewDialog({
   trigger,
   triggerVariant = "secondary",
+  triggerSize,
   triggerIcon,
   title,
   description,
@@ -29,6 +30,7 @@ export function DesignPreviewDialog({
 }: {
   trigger: string;
   triggerVariant?: ButtonProps["variant"];
+  triggerSize?: ButtonProps["size"];
   triggerIcon?: React.ReactNode;
   title: string;
   description: string;
@@ -48,7 +50,7 @@ export function DesignPreviewDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant={triggerVariant}>
+        <Button variant={triggerVariant} size={triggerSize}>
           {triggerIcon}
           {trigger}
         </Button>

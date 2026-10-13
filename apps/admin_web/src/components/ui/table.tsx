@@ -12,7 +12,12 @@ export function Table({
 }: React.ComponentProps<"table"> & { label: string }) {
   return (
     // A labelled scroll region is keyboard focusable so it can be scrolled without a mouse.
-    <div role="region" aria-label={label} tabIndex={0} className="relative w-full overflow-x-auto">
+    <div
+      role="region"
+      aria-label={label}
+      tabIndex={0}
+      className="relative w-full scroll-fade-x overflow-x-auto"
+    >
       <table className={cn("w-full border-collapse text-dense tabular", className)} {...props} />
     </div>
   );

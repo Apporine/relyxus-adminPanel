@@ -22,7 +22,7 @@ export function Tooltip({
         <TooltipPrimitive.Content
           side={side}
           sideOffset={6}
-          className="z-(--z-toast) max-w-xs rounded-control bg-ink px-2.5 py-1.5 text-micro text-canvas shadow-overlay"
+          className="z-(--z-toast) max-w-xs origin-(--radix-tooltip-content-transform-origin) animate-pop rounded-control bg-ink px-2.5 py-1.5 text-micro text-canvas shadow-overlay"
         >
           {content}
         </TooltipPrimitive.Content>

@@ -1,8 +1,14 @@
 import {
   ArrowRight,
+  Banknote,
+  Building2,
+  CalendarClock,
   CircleCheck,
   CircleDashed,
+  KeyRound,
   OctagonAlert,
+  Server,
+  Stamp,
   TriangleAlert,
   type LucideIcon,
 } from "lucide-react";
@@ -102,10 +108,11 @@ export function SummaryMetrics({
   return (
     <section
       aria-label="Portfolio summary"
-      className="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-6"
+      className="grid stagger grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-6"
     >
       <MetricCard
         label="Active customers"
+        icon={<Building2 />}
         value={formatNumber(summary.activeCustomers)}
         detail={`${summary.newThisMonth} new this month · ${summary.onboarding} onboarding`}
         href="/customers?status=active"
@@ -113,6 +120,7 @@ export function SummaryMetrics({
       />
       <MetricCard
         label="Annual contract value"
+        icon={<Banknote />}
         value={acv.value}
         detail={acv.detail}
         href="/commercial?status=active"
@@ -121,6 +129,7 @@ export function SummaryMetrics({
       />
       <MetricCard
         label="Renewals in 120 days"
+        icon={<CalendarClock />}
         value={formatNumber(summary.renewalCount)}
         detail={formatMoneyList(summary.renewalValue)}
         href="/commercial?renewal=120"
@@ -151,6 +160,7 @@ export function SummaryMetrics({
       </MetricCard>
       <MetricCard
         label="Production deployments"
+        icon={<Server />}
         value={formatNumber(summary.productionDeployments)}
         detail={
           summary.unsupportedProduction > 0 ? (
@@ -167,6 +177,7 @@ export function SummaryMetrics({
       />
       <MetricCard
         label="License risk"
+        icon={<KeyRound />}
         value={formatNumber(risk.total)}
         detail={riskParts.join(" · ") || "No licenses at risk"}
         href="/licensing?risk=any"
@@ -179,6 +190,7 @@ export function SummaryMetrics({
       </MetricCard>
       <MetricCard
         label="Pending approvals"
+        icon={<Stamp />}
         value={formatNumber(summary.pendingApprovals)}
         detail={`${summary.highImpactApprovals} high impact · oldest ${summary.oldestApprovalDays} days`}
         href="/approvals"

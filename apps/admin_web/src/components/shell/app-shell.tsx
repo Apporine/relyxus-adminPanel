@@ -33,7 +33,13 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       </a>
       <div className="flex min-h-dvh">
         <Sidebar environment={environment} />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="relative isolate flex min-w-0 flex-1 flex-col">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[30rem] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_45%,transparent)]"
+          >
+            <div className="absolute -inset-x-[10%] -top-1/3 h-[140%] animate-drift aurora" />
+          </div>
           <TopBar
             environment={environment}
             pendingApprovals={pendingApprovals}
@@ -44,7 +50,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
           <main
             id="main-content"
             tabIndex={-1}
-            className="mx-auto w-full max-w-(--ap-content-max-width) flex-1 px-4 py-6 outline-none md:px-8 md:py-8"
+            className="mx-auto w-full max-w-(--ap-content-max-width) flex-1 px-4 py-6 outline-none md:px-8 md:py-8 [&>*]:animate-rise"
           >
             {children}
           </main>

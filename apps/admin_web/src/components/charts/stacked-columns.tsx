@@ -119,29 +119,31 @@ export function StackedColumns({
                   strokeWidth={2}
                 />
               ) : null}
-              {nonZero.map(({ v, s }, index) => {
-                const isTop = index === nonZero.length - 1;
-                const h = Math.max(0, scale(v) - (isTop ? 0 : GAP));
-                cursor -= scale(v);
-                const segY = cursor + (isTop ? 0 : GAP);
-                const color = segments[s]?.color ?? "var(--ap-chart-neutral)";
-                return isTop ? (
-                  <path
-                    key={s}
-                    d={topRoundedRect(cx - barWidth / 2, segY, barWidth, h, RADIUS)}
-                    fill={color}
-                  />
-                ) : (
-                  <rect
-                    key={s}
-                    x={cx - barWidth / 2}
-                    y={segY}
-                    width={barWidth}
-                    height={h}
-                    fill={color}
-                  />
-                );
-              })}
+              <g className="chart-grow-y" style={{ ["--ap-delay" as string]: `${p * 50}ms` }}>
+                {nonZero.map(({ v, s }, index) => {
+                  const isTop = index === nonZero.length - 1;
+                  const h = Math.max(0, scale(v) - (isTop ? 0 : GAP));
+                  cursor -= scale(v);
+                  const segY = cursor + (isTop ? 0 : GAP);
+                  const color = segments[s]?.color ?? "var(--ap-chart-neutral)";
+                  return isTop ? (
+                    <path
+                      key={s}
+                      d={topRoundedRect(cx - barWidth / 2, segY, barWidth, h, RADIUS)}
+                      fill={color}
+                    />
+                  ) : (
+                    <rect
+                      key={s}
+                      x={cx - barWidth / 2}
+                      y={segY}
+                      width={barWidth}
+                      height={h}
+                      fill={color}
+                    />
+                  );
+                })}
+              </g>
               <text x={cx} y={HEIGHT - 6} textAnchor="middle" className="fill-fg-muted text-[11px]">
                 {period}
               </text>
