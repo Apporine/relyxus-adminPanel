@@ -1,0 +1,32 @@
+{
+  "name": "apporine-control-plane",
+  "private": true,
+  "packageManager": "pnpm@10.11.0",
+  "engines": {
+    "node": ">=24.21.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter admin_web dev",
+    "build": "pnpm --filter admin_web build",
+    "lint": "pnpm --filter admin_web lint",
+    "typecheck": "pnpm --filter admin_web typecheck",
+    "test": "pnpm --filter admin_web test",
+    "test:e2e": "pnpm --filter admin_web test:e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-tailwindcss": "0.8.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "lint-staged>tinyexec": "1.0.4"
+    }
+  }
+}

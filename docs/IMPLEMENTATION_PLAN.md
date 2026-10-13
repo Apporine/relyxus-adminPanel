@@ -18,15 +18,15 @@ Rules for the design track:
 
 `relyxus-frontend.vercel.app` is the sibling customer product. Patterns adopted from it:
 
-| Pattern | Relyxus | Control plane decision |
-| --- | --- | --- |
-| Framework | Next.js App Router, Turbopack | Same (Next.js 16, React 19, TypeScript strict) |
-| Styling | Tailwind v4, CSS-first `@theme` mapped to `--rx-*` tokens | Same mechanism, `--ap-*` tokens with the Apporine palette (§6) |
-| Primitives | Radix UI, lucide icons, zod | Same |
-| Shell | 56 px sticky top bar, collapsible sidebar, skip link | 56 px top bar, 248 / 72 px sidebar (§6.2), skip link |
-| Layering | z-index tokens (sticky, drawer, dialog, toast, palette) | Same token set |
-| Direction | Logical properties (`start`/`end`) | Same, keeps RTL possible |
-| Theme | Dark, neutral, monochrome action | **Different**: light Canvas, Ink navigation, Violet action, Cyan focus/healthy, Coral risk (§6) |
+| Pattern    | Relyxus                                                   | Control plane decision                                                                          |
+| ---------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Framework  | Next.js App Router, Turbopack                             | Same (Next.js 16, React 19, TypeScript strict)                                                  |
+| Styling    | Tailwind v4, CSS-first `@theme` mapped to `--rx-*` tokens | Same mechanism, `--ap-*` tokens with the Apporine palette (§6)                                  |
+| Primitives | Radix UI, lucide icons, zod                               | Same                                                                                            |
+| Shell      | 56 px sticky top bar, collapsible sidebar, skip link      | 56 px top bar, 248 / 72 px sidebar (§6.2), skip link                                            |
+| Layering   | z-index tokens (sticky, drawer, dialog, toast, palette)   | Same token set                                                                                  |
+| Direction  | Logical properties (`start`/`end`)                        | Same, keeps RTL possible                                                                        |
+| Theme      | Dark, neutral, monochrome action                          | **Different**: light Canvas, Ink navigation, Violet action, Cyan focus/healthy, Coral risk (§6) |
 
 The control plane is a separate product with its own palette; it shares engineering patterns, not visual identity.
 
@@ -53,8 +53,9 @@ The repository follows §41 so Python services (`services/control_api`, `service
 - **Branching**: `main` is production, `develop` is integration. Every change lands through a `feat/*`, `fix/*`, `docs/*` or `chore/*` branch and a pull request into `develop`. Releases are PRs from `develop` into `main`.
 - **Commits**: Conventional Commits, enforced by commitlint on `commit-msg`.
 - **Pre-commit**: lint-staged runs ESLint (fix) and Prettier on staged files; `pre-push` runs typecheck and unit tests.
-- **CI** (every PR and push to `develop`/`main`): install → format check → lint → typecheck → unit tests with coverage → production build → Playwright E2E + axe accessibility → dependency audit → secret scan.
-- **CD**: on `develop` and `main`, build an OCI image of the web app, generate an SBOM, and publish it with provenance. ECS Fargate deploy jobs (§34–§35) are defined but gated on AWS OIDC configuration, with production behind a manual environment approval.
+- **Runtime**: Node 24 LTS, pinned in `.nvmrc` and `.npmrc` (`use-node-version`), so pnpm runs project scripts on the same Node locally and in CI.
+- **CI** (every PR and push to `develop`/`main`): install → format check → lint → typecheck → unit tests with coverage → production build → Playwright E2E + axe accessibility → dependency audit → Semgrep SAST → Gitleaks secret scan.
+- **CD**: on `develop` and `main`, build the production bundle once, attach build provenance and publish it as the release artifact. Containerization (OCI image, SBOM) and ECS Fargate deployment (§34–§35) come in a later release.
 
 ## 5. Feature breakdown
 
@@ -62,40 +63,40 @@ Each feature is one branch and one PR. Status: ✅ done · 🚧 in progress · �
 
 ### Design track (frontend, fixture data)
 
-| # | Feature | Scope | Spec |
-| --- | --- | --- | --- |
-| F0 | Plan and spec in repo | This document, spec under `docs/spec` | §42–43 |
-| F1 | Foundation and quality pipeline | pnpm workspace, Next.js app, TS strict, ESLint, Prettier, Vitest, Playwright + axe, husky, lint-staged, commitlint, CI, CD image build, PR template, Dependabot | §35, §40 |
-| F2 | Design system | Tokens (color, type, spacing, radius, layers, density), fonts, focus ring, primitives: Button, Badge/StatusBadge, Card, MetricCard, Table, Tabs, Dialog, Input/Select/Textarea, Tooltip, CopyableId, EmptyState, Skeleton, PageHeader. Living style guide at `/design-system` | §6, §32 |
-| F3 | Global shell | Sidebar (15 modules, collapsible), top bar, environment badge, product switcher, breadcrumbs, pending approvals count, notifications, staff menu, command palette with search grammar (`customer:`, `license:`…), responsive collapse at 1024 px | §4, §7 |
-| F4 | Portfolio command center | Filter bar, 10 widgets, operational inbox, drill-through links, states (loading, partial, permission limited, stale) | §8, §30.1 |
-| F5 | Customers | Customer list (dense table, saved views, column density), Customer 360 with 13 tabs, right rail, unified timeline, contact detail | §10, §12, §30.1 |
-| F6 | Licensing | License list, license detail with immutable revision selector, Issue / Renew / Suspend / Revoke flows with reason, impact and typed confirmation, artifact verify | §15, §31 |
-| F7 | Approvals | Queue (Mine, Team, High impact, Expiring, Decided, All), approval detail with structured diff, policy requirements, self-approval guard, My decisions | §21, §30.1 |
-| F8 | Deployments and releases | Fleet list, deployment detail, release heatmap, upgrade readiness; release list/detail, compatibility matrix, customer impact preview | §16, §17 |
-| F9 | Commercial and entitlements | Contract list/detail, renewal radar, renewal workspace; entitlement definitions, customer entitlement detail, drift review | §13, §14, §19 |
-| F10 | Products | Product list/detail, entitlement catalog, product customers, release train | §9 |
-| F11 | Success and support | Health overview and explainable score, success plan, QBR record, risk register; support overview, case references, escalation workspace, SLA report; onboarding board | §11, §19, §20 |
-| F12 | Security | Staff access, role detail, access review, API clients, signing key metadata, break glass, security posture | §5, §23 |
-| F13 | Audit | Audit log with synchronized analytics and detail drawer, audit analytics, export center | §24 |
-| F14 | Finance, analytics, data quality | Commercial summary, cost to serve, margin estimate, cost attribution; report library/builder, saved views, scheduled reports; data quality center | §22, §26, §27 |
-| F15 | Settings and AI assistant shell | Organization, identity, notifications, integrations, data policy, environments; read-only operator assistant panel | §28, §29 |
+| #   | Feature                          | Scope                                                                                                                                                                                                                                                                         | Spec            |
+| --- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| F0  | Plan and spec in repo            | This document, spec under `docs/spec`                                                                                                                                                                                                                                         | §42–43          |
+| F1  | Foundation and quality pipeline  | pnpm workspace, Next.js app, TS strict, ESLint, Prettier, Vitest, Playwright + axe, husky, lint-staged, commitlint, CI, CD bundle with provenance, PR template, Dependabot                                                                                                    | §35, §40        |
+| F2  | Design system                    | Tokens (color, type, spacing, radius, layers, density), fonts, focus ring, primitives: Button, Badge/StatusBadge, Card, MetricCard, Table, Tabs, Dialog, Input/Select/Textarea, Tooltip, CopyableId, EmptyState, Skeleton, PageHeader. Living style guide at `/design-system` | §6, §32         |
+| F3  | Global shell                     | Sidebar (15 modules, collapsible), top bar, environment badge, product switcher, breadcrumbs, pending approvals count, notifications, staff menu, command palette with search grammar (`customer:`, `license:`…), responsive collapse at 1024 px                              | §4, §7          |
+| F4  | Portfolio command center         | Filter bar, 10 widgets, operational inbox, drill-through links, states (loading, partial, permission limited, stale)                                                                                                                                                          | §8, §30.1       |
+| F5  | Customers                        | Customer list (dense table, saved views, column density), Customer 360 with 13 tabs, right rail, unified timeline, contact detail                                                                                                                                             | §10, §12, §30.1 |
+| F6  | Licensing                        | License list, license detail with immutable revision selector, Issue / Renew / Suspend / Revoke flows with reason, impact and typed confirmation, artifact verify                                                                                                             | §15, §31        |
+| F7  | Approvals                        | Queue (Mine, Team, High impact, Expiring, Decided, All), approval detail with structured diff, policy requirements, self-approval guard, My decisions                                                                                                                         | §21, §30.1      |
+| F8  | Deployments and releases         | Fleet list, deployment detail, release heatmap, upgrade readiness; release list/detail, compatibility matrix, customer impact preview                                                                                                                                         | §16, §17        |
+| F9  | Commercial and entitlements      | Contract list/detail, renewal radar, renewal workspace; entitlement definitions, customer entitlement detail, drift review                                                                                                                                                    | §13, §14, §19   |
+| F10 | Products                         | Product list/detail, entitlement catalog, product customers, release train                                                                                                                                                                                                    | §9              |
+| F11 | Success and support              | Health overview and explainable score, success plan, QBR record, risk register; support overview, case references, escalation workspace, SLA report; onboarding board                                                                                                         | §11, §19, §20   |
+| F12 | Security                         | Staff access, role detail, access review, API clients, signing key metadata, break glass, security posture                                                                                                                                                                    | §5, §23         |
+| F13 | Audit                            | Audit log with synchronized analytics and detail drawer, audit analytics, export center                                                                                                                                                                                       | §24             |
+| F14 | Finance, analytics, data quality | Commercial summary, cost to serve, margin estimate, cost attribution; report library/builder, saved views, scheduled reports; data quality center                                                                                                                             | §22, §26, §27   |
+| F15 | Settings and AI assistant shell  | Organization, identity, notifications, integrations, data policy, environments; read-only operator assistant panel                                                                                                                                                            | §28, §29        |
 
 ### Platform track (after design sign-off, per §42)
 
-| Phase | Scope |
-| --- | --- |
-| 1 | Control API (FastAPI), PostgreSQL migrations, OIDC auth, staff RBAC with scopes, audit framework, environments |
-| 2 | Products, customers, contacts, account teams, global search (PostgreSQL FTS), Customer 360 end to end |
-| 3 | Contracts, subscriptions, entitlements, renewal dates |
-| 4 | License Issuer with KMS adapter, approvals, issue/renew/suspend/revoke, offline artifacts |
-| 5 | Deployments, releases, compatibility, check-in metadata, drift engine |
-| 6 | Onboarding, health, support references, success plans, tasks, renewal workspace |
-| 7 | Finance, cost attribution, analytics, reports, data quality |
-| 8 | Security operations, access reviews, API clients, key rotation workflow, export center |
-| 9 | Integrations, automation rules, notifications |
-| 10 | AI operator assistant, read only first |
-| 11 | Production AWS hardening (ECS Fargate, RDS Multi AZ), DR drills, pentest, performance |
+| Phase | Scope                                                                                                          |
+| ----- | -------------------------------------------------------------------------------------------------------------- |
+| 1     | Control API (FastAPI), PostgreSQL migrations, OIDC auth, staff RBAC with scopes, audit framework, environments |
+| 2     | Products, customers, contacts, account teams, global search (PostgreSQL FTS), Customer 360 end to end          |
+| 3     | Contracts, subscriptions, entitlements, renewal dates                                                          |
+| 4     | License Issuer with KMS adapter, approvals, issue/renew/suspend/revoke, offline artifacts                      |
+| 5     | Deployments, releases, compatibility, check-in metadata, drift engine                                          |
+| 6     | Onboarding, health, support references, success plans, tasks, renewal workspace                                |
+| 7     | Finance, cost attribution, analytics, reports, data quality                                                    |
+| 8     | Security operations, access reviews, API clients, key rotation workflow, export center                         |
+| 9     | Integrations, automation rules, notifications                                                                  |
+| 10    | AI operator assistant, read only first                                                                         |
+| 11    | Production AWS hardening (ECS Fargate, RDS Multi AZ), DR drills, pentest, performance                          |
 
 Design-track pages switch from fixtures to the API phase by phase by replacing the bodies of `src/server/data/*` functions.
 
