@@ -210,7 +210,7 @@ export function TopBar({
         <ProductFilter products={products} />
         <EnvironmentBadge environment={environment} />
         <Link
-          href="/approvals"
+          href="/approvals?view=team"
           className="hidden h-8 items-center gap-1.5 rounded-control px-2.5 text-dense font-medium text-fg-secondary hover:bg-surface-hover hover:text-fg sm:inline-flex"
         >
           <Stamp aria-hidden="true" className="size-4" />

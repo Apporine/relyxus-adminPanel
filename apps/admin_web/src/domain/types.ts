@@ -248,6 +248,13 @@ export interface ChangeLine {
   after: string;
 }
 
+/** A record the decider can check; external references have no link. */
+export interface Evidence {
+  label: string;
+  reference: string;
+  href?: string;
+}
+
 export interface ApprovalRequest {
   id: string;
   type: ApprovalType;
@@ -262,13 +269,14 @@ export interface ApprovalRequest {
   decisionReason?: string;
   customerId?: string;
   productId?: string;
-  targetType: "license" | "entitlement" | "signing_key" | "staff" | "policy";
+  targetType: "license" | "contract_line" | "entitlement" | "signing_key" | "staff" | "policy";
   targetId: string;
   title: string;
   reason: string;
   impact: string[];
   diff: ChangeLine[];
   policy: string[];
+  evidence?: Evidence[];
   requiresStepUp: boolean;
   createdAt: Iso;
   expiresAt: Iso;
