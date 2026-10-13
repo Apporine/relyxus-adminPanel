@@ -53,7 +53,7 @@ export function MetricCard({
         </>
       )}
       <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-micro text-fg-muted">
-        <span className="truncate">{source}</span>
+        <span className="line-clamp-2 min-w-0">{source}</span>
         {restricted ? null : (
           <Link
             href={href}

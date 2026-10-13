@@ -7,6 +7,8 @@ import {
   formatRelativeDays,
   formatRelativeTime,
   formatTimestamp,
+  formatMoneyList,
+  plural,
 } from "./format";
 
 const NOW = "2026-10-13T09:00:00Z";
@@ -51,4 +53,19 @@ describe("dates", () => {
 
 it("formats percentages", () => {
   expect(formatPercent(0.1234, 1)).toBe("12.3%");
+});
+
+it("pluralises counts", () => {
+  expect(plural(1, "deployment")).toBe("1 deployment");
+  expect(plural(1200, "customer")).toBe("1,200 customers");
+});
+
+it("lists per-currency totals", () => {
+  expect(formatMoneyList([])).toBe("—");
+  expect(
+    formatMoneyList([
+      { amountMinor: 120_000_000, currency: "EUR" },
+      { amountMinor: 56_000_000, currency: "GBP" },
+    ]),
+  ).toBe("€1.2m · £560k");
 });

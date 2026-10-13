@@ -25,9 +25,13 @@ import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
 import {
   approvals,
+  auditDaily,
   auditEvents,
+  auditSummary,
+  costImport,
   costSnapshots,
   healthHistory,
+  licenseRiskHistory,
   tasks,
 } from "../fixtures/operations";
 import { CURRENT_STAFF_ID, REFERENCE_NOW, products, releases, staff } from "../fixtures/staff";
@@ -121,6 +125,18 @@ export async function listCostSnapshots() {
 
 export async function listHealthHistory() {
   return healthHistory;
+}
+
+export async function listLicenseRiskHistory() {
+  return licenseRiskHistory;
+}
+
+export async function getAuditActivity() {
+  return { daily: auditDaily, ...auditSummary };
+}
+
+export async function getCostImportStatus() {
+  return costImport;
 }
 
 // Search -------------------------------------------------------------------------------------
