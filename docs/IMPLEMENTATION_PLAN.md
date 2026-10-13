@@ -53,7 +53,7 @@ The repository follows §41 so Python services (`services/control_api`, `service
 - **Branching**: `main` is production, `develop` is integration. Every change lands through a `feat/*`, `fix/*`, `docs/*` or `chore/*` branch and a pull request into `develop`. Releases are PRs from `develop` into `main`.
 - **Commits**: Conventional Commits, enforced by commitlint on `commit-msg`.
 - **Pre-commit**: lint-staged runs ESLint (fix) and Prettier on staged files; `pre-push` runs lint, typecheck and unit tests.
-- **Runtime**: Node 24 LTS, pinned in `.nvmrc` and `.npmrc` (`use-node-version`), so pnpm runs project scripts on the same Node locally and in CI.
+- **Runtime**: Node 24 LTS. `devEngines.runtime` in the root `package.json` makes pnpm download Node 24.21.0 and run every script on it locally; `engines.node` (`24.x`) is what Vercel and other hosts read; CI uses `.nvmrc`. (`use-node-version` in `.npmrc` was dropped because Vercel rejects it.)
 - **CI** (every PR and push to `develop`/`main`): install → format check → lint → typecheck → unit tests with coverage → production build → Playwright E2E + axe accessibility → dependency audit → Semgrep SAST → Gitleaks secret scan.
 - **CD**: on `develop` and `main`, build the production bundle once, attach build provenance and publish it as the release artifact. Containerization (OCI image, SBOM) and ECS Fargate deployment (§34–§35) come in a later release.
 
