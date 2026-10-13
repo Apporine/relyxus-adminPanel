@@ -59,7 +59,7 @@ The repository follows §41 so Python services (`services/control_api`, `service
 
 ## 5. Feature breakdown
 
-Each feature is one branch and one PR. Status: ✅ PR open or merged (number in brackets) · ⏳ planned.
+Each feature is one branch and one PR. Status: ✅ PR open or merged (number in brackets) · 🚧 in progress · ⏳ planned.
 
 ### Design track (frontend, fixture data)
 

@@ -18,6 +18,8 @@ import type {
   Product,
   Release,
   StaffUser,
+  SuccessMilestone,
+  SupportCase,
   Task,
 } from "@/domain/types";
 import type { SearchResult } from "@/domain/search";
@@ -29,9 +31,12 @@ import {
   auditEvents,
   auditSummary,
   costImport,
+  crmSync,
   costSnapshots,
   healthHistory,
   licenseRiskHistory,
+  successMilestones,
+  supportCases,
   tasks,
 } from "../fixtures/operations";
 import { CURRENT_STAFF_ID, REFERENCE_NOW, products, releases, staff } from "../fixtures/staff";
@@ -137,6 +142,20 @@ export async function getAuditActivity() {
 
 export async function getCostImportStatus() {
   return costImport;
+}
+
+export async function getCrmSyncStatus() {
+  return crmSync;
+}
+
+export async function listSupportCases(customerId?: string): Promise<SupportCase[]> {
+  return customerId ? supportCases.filter((c) => c.customerId === customerId) : supportCases;
+}
+
+export async function listSuccessMilestones(customerId?: string): Promise<SuccessMilestone[]> {
+  return customerId
+    ? successMilestones.filter((m) => m.customerId === customerId)
+    : successMilestones;
 }
 
 // Search -------------------------------------------------------------------------------------

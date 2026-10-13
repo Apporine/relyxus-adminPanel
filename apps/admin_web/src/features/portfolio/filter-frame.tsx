@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export interface FilterOption {
   value: string;
@@ -36,6 +37,7 @@ export function FilterFrame({
   const router = useRouter();
   const pathname = usePathname();
   const [pending, startTransition] = useTransition();
+  const hydrated = useHydrated();
 
   function navigate(next: Record<string, string | undefined>) {
     const params = new URLSearchParams();
@@ -53,16 +55,20 @@ export function FilterFrame({
       <form
         role="search"
         aria-label="Portfolio filters"
+        data-hydrated={hydrated}
         className="sticky top-topbar z-(--z-sticky) -mx-4 flex flex-wrap items-end gap-3 border-b border-border bg-canvas/95 px-4 py-3 backdrop-blur-sm md:-mx-8 md:px-8"
         onSubmit={(event) => event.preventDefault()}
       >
         {filters.map((filter) => (
-          <label
-            key={filter.name}
-            className="flex w-36 flex-col gap-1 text-micro font-medium text-fg-muted"
-          >
-            {filter.label}
+          <div key={filter.name} className="flex w-36 flex-col gap-1">
+            <label
+              htmlFor={`portfolio-filter-${filter.name}`}
+              className="text-micro font-medium text-fg-muted"
+            >
+              {filter.label}
+            </label>
             <Select
+              id={`portfolio-filter-${filter.name}`}
               name={filter.name}
               value={values[filter.name] ?? ""}
               onChange={(event) =>
@@ -77,7 +83,7 @@ export function FilterFrame({
                 </option>
               ))}
             </Select>
-          </label>
+          </div>
         ))}
         {active ? (
           <Button

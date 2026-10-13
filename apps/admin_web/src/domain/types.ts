@@ -318,6 +318,33 @@ export interface Task {
   href: string;
 }
 
+// Support and success ---------------------------------------------------------------
+
+export type CaseSeverity = "sev1" | "sev2" | "sev3" | "sev4";
+
+/** Support case reference; full case content stays in the support platform (spec §20). */
+export interface SupportCase {
+  id: string;
+  customerId: string;
+  externalRef: string;
+  title: string;
+  severity: CaseSeverity;
+  status: "open" | "pending_customer" | "resolved";
+  openedAt: Iso;
+  resolvedAt?: Iso;
+  slaState: "within" | "at_risk" | "breached";
+  ownerId: string;
+  releaseVersion: string;
+}
+
+export interface SuccessMilestone {
+  customerId: string;
+  title: string;
+  ownerId: string;
+  dueAt: Iso;
+  status: "done" | "in_progress" | "not_started" | "overdue";
+}
+
 // Economics ---------------------------------------------------------------------------
 
 export interface CostSnapshot {

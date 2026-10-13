@@ -401,6 +401,24 @@ const seeds: CustomerSeed[] = [
     },
     lastActivity: "2026-10-06T10:00:00Z",
   },
+  {
+    // Created by a CRM sync on 9 Oct; likely the same legal entity as Northwind Payments.
+    id: "cus_northwind_uk",
+    name: "Northwind Payments UK",
+    legal: "Northwind Payments Limited",
+    segment: "enterprise",
+    industry: "Payments",
+    country: "United Kingdom",
+    region: "UK",
+    stage: "commercial_handoff",
+    health: "watch",
+    currency: "GBP",
+    since: "2026-10-09",
+    products: ["prd_relyxus"],
+    tier: "standard",
+    owners: { commercial_owner: "stf_02" },
+    lastActivity: "2026-10-09T10:12:00Z",
+  },
 ];
 
 const onboardingStages = new Set<LifecycleStage>([
