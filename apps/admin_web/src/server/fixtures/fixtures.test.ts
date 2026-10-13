@@ -1,8 +1,11 @@
 import { canonicalPayload, hashPayload } from "@/domain/artifact";
-import { approvals, auditEvents, healthHistory, tasks } from "./operations";
+import { verifyAuditChain } from "@/domain/audit";
+import { auditDaily, auditEvents } from "./audit";
+import { approvals, healthHistory, tasks } from "./operations";
 import { contracts, deployments, licenses } from "./commercial";
 import { contacts, customers } from "./customers";
-import { products, releases, staff } from "./staff";
+import { apiClients } from "./security";
+import { products, releases, REFERENCE_NOW, staff } from "./staff";
 
 const ids = <T extends { id: string }>(items: T[]) => new Set(items.map((i) => i.id));
 const staffIds = ids(staff);
@@ -76,9 +79,32 @@ describe("fixture integrity", () => {
       expect(staffIds).toContain(t.ownerId);
       if (t.customerId) expect(customerIds).toContain(t.customerId);
     }
+    const clientIds = ids(apiClients);
     for (const e of auditEvents) {
-      expect(staffIds).toContain(e.actorId);
+      if (e.actorType === "api_client") expect(clientIds).toContain(e.actorId);
+      else if (e.actorType !== "system") expect(staffIds).toContain(e.actorId);
       if (e.customerId) expect(customerIds).toContain(e.customerId);
+      if (e.approvalId) expect(ids(approvals)).toContain(e.approvalId);
+    }
+  });
+
+  it("keeps the audit log consistent: unique, hash chained, matching daily totals", () => {
+    expect(ids(auditEvents).size).toBe(auditEvents.length);
+    expect(verifyAuditChain(auditEvents)).toMatchObject({ intact: true });
+    const total = auditDaily.reduce((sum, d) => sum + d.actions, 0);
+    expect(total).toBe(auditEvents.length);
+    expect(auditEvents.every((e) => e.at <= REFERENCE_NOW)).toBe(true);
+  });
+
+  it("logs each staff member's last sign in and nothing after it", () => {
+    for (const person of staff) {
+      const signIns = auditEvents.filter(
+        (e) => e.actorId === person.id && e.action === "staff.sign_in" && e.result === "success",
+      );
+      for (const e of signIns) expect(e.at <= person.lastSignInAt).toBe(true);
+      if (person.lastSignInAt >= "2026-09-30") {
+        expect(signIns.some((e) => e.at === person.lastSignInAt)).toBe(true);
+      }
     }
   });
 

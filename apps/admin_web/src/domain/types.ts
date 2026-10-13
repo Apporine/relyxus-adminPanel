@@ -408,10 +408,19 @@ export interface ApprovalRequest {
 
 export type AuditResult = "success" | "failure" | "denied";
 
+/** Who acted: a staff member, a Control API client, or the platform's own automation. */
+export type AuditActorType = "staff" | "api_client" | "system";
+
 export interface AuditEvent {
   id: string;
   at: Iso;
   actorId: string;
+  /** Defaults to staff. API clients use their client ID; system actors use a job name. */
+  actorType?: AuditActorType;
+  /** Identity the action ran as when it differs from the actor, such as break glass. */
+  effectiveIdentity?: string;
+  /** Identity provider, method and step-up, such as "Entra ID · phishing-resistant MFA". */
+  authContext?: string;
   action: string;
   actionLabel: string;
   objectType: string;
@@ -424,6 +433,53 @@ export interface AuditEvent {
   correlationId: string;
   source: "web" | "api" | "automation";
   highImpact: boolean;
+  /** Network origin where appropriate; documentation ranges in fixtures. */
+  sourceAddress?: string;
+  environment?: DeploymentEnvironment;
+  /** Before and after summary of the change. */
+  changes?: ChangeLine[];
+  /** Restricted fields: before and after values are masked without field permission. */
+  sensitivity?: "commercial" | "security";
+  approvalId?: string;
+  evidence?: Evidence[];
+  /** Append-only integrity: position in the log and the hash chain (spec §24). */
+  sequence?: number;
+  previousHash?: string;
+  hash?: string;
+}
+
+/** Delivery of audit events to the external SIEM stream (spec §24). */
+export interface AuditStreamStatus {
+  destination: string;
+  state: "healthy" | "delayed" | "disabled";
+  lastDeliveredAt: Iso;
+  /** Events written but not yet acknowledged by the destination. */
+  backlog: number;
+}
+
+export type AuditExportStatus = "queued" | "running" | "ready" | "expired" | "denied";
+
+/** Audit export or evidence bundle in the export center (spec §24). */
+export interface AuditExport {
+  id: string;
+  kind: "audit_export" | "evidence_bundle";
+  title: string;
+  requestedById: string;
+  requestedAt: Iso;
+  /** Filter or scope the export covers, in words. */
+  scope: string;
+  format: "CSV" | "JSON Lines" | "ZIP";
+  status: AuditExportStatus;
+  rows?: number;
+  /** Includes restricted fields; recorded as a sensitive export. */
+  sensitive: boolean;
+  approvalId?: string;
+  /** SHA-256 of the export manifest, for integrity checks. */
+  manifestDigest?: string;
+  /** Immutable storage with retention lock for protected exports. */
+  storage: string;
+  completedAt?: Iso;
+  expiresAt?: Iso;
 }
 
 // Work --------------------------------------------------------------------------------

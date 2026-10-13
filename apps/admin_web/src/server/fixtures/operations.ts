@@ -2,7 +2,6 @@ import type {
   ApprovalRequest,
   SuccessMilestone,
   SupportCase,
-  AuditEvent,
   CostSnapshot,
   HealthSnapshot,
   Task,
@@ -263,180 +262,6 @@ export const approvals: ApprovalRequest[] = [
   },
 ];
 
-const audit = (
-  id: number,
-  at: string,
-  actorId: string,
-  action: string,
-  actionLabel: string,
-  objectType: string,
-  objectId: string,
-  extra: Partial<AuditEvent> = {},
-): AuditEvent => ({
-  id: `aud_${String(id).padStart(6, "0")}`,
-  at,
-  actorId,
-  action,
-  actionLabel,
-  objectType,
-  objectId,
-  result: "success",
-  requestId: `req_${(id * 7919).toString(36)}`,
-  correlationId: `cor_${(id * 104729).toString(36)}`,
-  source: "web",
-  highImpact: false,
-  ...extra,
-});
-
-export const auditEvents: AuditEvent[] = [
-  audit(9120, "2026-10-13T08:47:00Z", "stf_06", "staff.sign_in", "Signed in", "staff", "stf_06"),
-  audit(
-    9119,
-    "2026-10-13T07:55:00Z",
-    "stf_02",
-    "license.revoke.request",
-    "Requested license revocation",
-    "license",
-    "LIC_00400",
-    {
-      customerId: "cus_atlas",
-      productId: "prd_relyxus",
-      highImpact: true,
-      reason: "Staging license bound to an unregistered cluster.",
-    },
-  ),
-  audit(
-    9118,
-    "2026-10-13T07:40:00Z",
-    "stf_01",
-    "customer.update",
-    "Updated customer",
-    "customer",
-    "cus_northwind",
-    { customerId: "cus_northwind", reason: "Updated maintenance window." },
-  ),
-  audit(
-    9117,
-    "2026-10-13T06:02:00Z",
-    "stf_04",
-    "deployment.check_in",
-    "Recorded deployment check in",
-    "deployment",
-    "dep_northwind_production",
-    { customerId: "cus_northwind", productId: "prd_relyxus", source: "api" },
-  ),
-  audit(
-    9116,
-    "2026-10-12T19:30:00Z",
-    "stf_03",
-    "success_plan.update",
-    "Updated success plan",
-    "customer",
-    "cus_meridian",
-    { customerId: "cus_meridian" },
-  ),
-  audit(
-    9115,
-    "2026-10-12T17:41:00Z",
-    "stf_08",
-    "license.download",
-    "Download artifact denied",
-    "license",
-    "LIC_00391",
-    { customerId: "cus_halden", result: "denied", reason: "Missing license operator role." },
-  ),
-  audit(
-    9114,
-    "2026-10-12T15:22:00Z",
-    "stf_07",
-    "risk.create",
-    "Raised renewal risk",
-    "customer",
-    "cus_halden",
-    { customerId: "cus_halden", reason: "Executive sponsor left the customer." },
-  ),
-  audit(
-    9113,
-    "2026-10-12T10:20:00Z",
-    "stf_01",
-    "license.renew.request",
-    "Requested license renewal",
-    "license",
-    "LIC_00391",
-    { customerId: "cus_halden", productId: "prd_relyxus" },
-  ),
-  audit(
-    9112,
-    "2026-10-12T02:00:00Z",
-    "stf_04",
-    "automation.renewal_task",
-    "Created renewal task",
-    "contract",
-    "ctr_tamsin",
-    { customerId: "cus_tamsin", source: "automation" },
-  ),
-  audit(
-    9111,
-    "2026-10-11T15:02:00Z",
-    "stf_05",
-    "staff.sign_in",
-    "Sign in failed",
-    "staff",
-    "stf_05",
-    { result: "failure", reason: "MFA challenge timed out." },
-  ),
-  audit(
-    9110,
-    "2026-10-10T14:00:00Z",
-    "stf_02",
-    "entitlement.change.request",
-    "Requested entitlement change",
-    "entitlement",
-    "ent_meridian_dr",
-    { customerId: "cus_meridian", productId: "prd_relyxus" },
-  ),
-  audit(
-    9109,
-    "2026-10-09T13:00:00Z",
-    "stf_04",
-    "license.verify",
-    "License verification failed",
-    "license",
-    "LIC_00400",
-    { customerId: "cus_atlas", productId: "prd_relyxus", result: "failure", source: "api" },
-  ),
-  audit(
-    9108,
-    "2026-10-08T09:00:00Z",
-    "stf_06",
-    "signing_key.rotation.plan",
-    "Planned signing key rotation",
-    "signing_key",
-    "kms-sig-2026b",
-    { highImpact: true },
-  ),
-  audit(
-    9107,
-    "2026-10-06T11:12:00Z",
-    "stf_05",
-    "approval.approve",
-    "Approved license issue",
-    "approval",
-    "apr_1036",
-    { customerId: "cus_brightwater", productId: "prd_relyxus", highImpact: true },
-  ),
-  audit(
-    9106,
-    "2026-10-06T11:14:00Z",
-    "stf_01",
-    "license.issue",
-    "Issued license revision",
-    "license",
-    "LIC_00403",
-    { customerId: "cus_brightwater", productId: "prd_relyxus", highImpact: true },
-  ),
-];
-
 export const tasks: Task[] = [
   {
     id: "tsk_501",
@@ -571,19 +396,6 @@ export const licenseRiskHistory: Array<{ weekOf: string; count: number }> = [
   { weekOf: "2026-10-05", count: 4 },
   { weekOf: "2026-10-12", count: 4 },
 ];
-
-const dailyActions = [38, 44, 41, 12, 9, 47, 52, 49, 55, 43, 14, 11, 58, 61];
-const dailyFailures = [1, 0, 2, 0, 0, 1, 3, 1, 0, 2, 0, 0, 4, 2];
-
-/** Administrative actions per day over the last 14 days. */
-export const auditDaily: Array<{ date: string; actions: number; failures: number }> =
-  dailyActions.map((actions, i) => ({
-    date: new Date(Date.parse("2026-09-30T00:00:00Z") + i * 86_400_000).toISOString().slice(0, 10),
-    actions,
-    failures: dailyFailures[i] ?? 0,
-  }));
-
-export const auditSummary = { uniqueActors: 9, productsAffected: 2, highImpactEvents: 6 };
 
 /** The AWS cost import runs daily; three days without one means cost data is stale. */
 export const costImport = {
