@@ -7,6 +7,8 @@ import type {
   RenewalStage,
   SupportState,
 } from "@/domain/types";
+import { createHash } from "node:crypto";
+import { canonicalJson, canonicalPayload } from "@/domain/artifact";
 import { customers } from "./customers";
 
 const pad = (n: number, width = 5) => String(n).padStart(width, "0");
@@ -58,6 +60,9 @@ const licenseOverrides: Record<string, { state: LicenseState; expiresAt?: string
   "cus_atlas:prd_relyxus": { state: "verification_failed" },
 };
 
+/** Contract lines not licensed yet; the Issue flow offers them. */
+const notYetLicensed = new Set(["cus_vantage:prd_sentinel"]);
+
 const entitlementSet = (deployments: number, tier: string) => [
   {
     key: "deployments.production.max",
@@ -76,8 +81,9 @@ const entitlementSet = (deployments: number, tier: string) => [
 
 export const licenses: License[] = contracts.flatMap((contract, i) => {
   const customer = customers.find((c) => c.id === contract.customerId)!;
-  return contract.productIds.map((productId, j) => {
+  return contract.productIds.flatMap((productId, j) => {
     const key = `${customer.id}:${productId}`;
+    if (notYetLicensed.has(key)) return [];
     const override = licenseOverrides[key];
     const allowance = customer.supportTier === "mission_critical" ? 3 : 2;
     const tierLabel = customer.supportTier.replace("_", " ");
@@ -89,7 +95,7 @@ export const licenses: License[] = contracts.flatMap((contract, i) => {
       issuedById: "stf_01",
       approvedById: r % 2 === 0 ? "stf_05" : "stf_06",
       signingKeyId: r === revisionCount - 1 ? "kms-sig-2026a" : "kms-sig-2025b",
-      payloadHash: `sha256:${hex(`${id}-${r}`)}`,
+      payloadHash: "",
       reason:
         r === 0
           ? "Initial issue from contract"
@@ -98,7 +104,7 @@ export const licenses: License[] = contracts.flatMap((contract, i) => {
             : "Support tier upgrade",
       entitlements: entitlementSet(allowance - (r < revisionCount - 1 ? 1 : 0), tierLabel),
     }));
-    return {
+    const license: License = {
       id,
       customerId: customer.id,
       productId,
@@ -113,7 +119,15 @@ export const licenses: License[] = contracts.flatMap((contract, i) => {
       lastVerificationAt:
         override?.state === "verification_failed" ? "2026-10-09T13:00:00Z" : "2026-10-12T02:00:00Z",
       revisions,
-    } satisfies License;
+    };
+    // Each revision records the real SHA-256 of its canonical payload, so artifacts can be
+    // checked for tampering in the verify screen.
+    for (const revision of revisions) {
+      revision.payloadHash = `sha256:${createHash("sha256")
+        .update(canonicalJson(canonicalPayload(license, revision)))
+        .digest("hex")}`;
+    }
+    return license;
   });
 });
 

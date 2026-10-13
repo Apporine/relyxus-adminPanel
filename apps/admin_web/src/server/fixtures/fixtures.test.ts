@@ -1,3 +1,4 @@
+import { canonicalPayload, hashPayload } from "@/domain/artifact";
 import { approvals, auditEvents, healthHistory, tasks } from "./operations";
 import { contracts, deployments, licenses } from "./commercial";
 import { contacts, customers } from "./customers";
@@ -78,6 +79,14 @@ describe("fixture integrity", () => {
     for (const e of auditEvents) {
       expect(staffIds).toContain(e.actorId);
       if (e.customerId) expect(customerIds).toContain(e.customerId);
+    }
+  });
+
+  it("records the real payload hash for every license revision", async () => {
+    for (const license of licenses) {
+      for (const revision of license.revisions) {
+        expect(revision.payloadHash).toBe(await hashPayload(canonicalPayload(license, revision)));
+      }
     }
   });
 });

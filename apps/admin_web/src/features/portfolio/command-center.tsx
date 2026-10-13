@@ -33,7 +33,7 @@ import {
   listStaff,
   listTasks,
 } from "@/server/data";
-import { FilterFrame, type FilterDefinition } from "./filter-frame";
+import { FilterFrame, type FilterDefinition } from "@/components/filters/filter-frame";
 import {
   AuditActivityCard,
   CostCard,
@@ -160,7 +160,7 @@ export async function CommandCenter({
   };
 
   return (
-    <FilterFrame filters={filterDefinitions} values={values}>
+    <FilterFrame label="Portfolio filters" filters={filterDefinitions} values={values}>
       {summary.customerCount === 0 ? (
         <Card>
           <EmptyState

@@ -9,15 +9,16 @@ Internal admin control plane for Apporine customer operations: products, custome
 
 The project is in the **design track**: the Admin Web is built screen by screen against typed fixture data, before the Control API exists. Nothing is persisted. Actions that would change data open their real dialogs and end with "Not connected to the Control API. Nothing was saved."
 
-| Feature                         | Screens                                                           | State   |
-| ------------------------------- | ----------------------------------------------------------------- | ------- |
-| Foundation and quality pipeline | —                                                                 | Done    |
-| Design system                   | `/design-system`                                                  | Done    |
-| Domain model and data layer     | —                                                                 | Done    |
-| Global shell                    | Sidebar, top bar, command palette (Ctrl/⌘ K)                      | Done    |
-| Portfolio command center        | `/`                                                               | Done    |
-| Customers                       | `/customers` list, `/customers/[id]` Customer 360, contact detail | Done    |
-| All other modules               | Routed placeholders that list each module's planned screens       | Planned |
+| Feature                         | Screens                                                                                                           | State   |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------- |
+| Foundation and quality pipeline | —                                                                                                                 | Done    |
+| Design system                   | `/design-system`                                                                                                  | Done    |
+| Domain model and data layer     | —                                                                                                                 | Done    |
+| Global shell                    | Sidebar, top bar, command palette (Ctrl/⌘ K)                                                                      | Done    |
+| Portfolio command center        | `/`                                                                                                               | Done    |
+| Customers                       | `/customers` list, `/customers/[id]` Customer 360, contact detail                                                 | Done    |
+| Licensing                       | `/licensing` list, `/licensing/[id]` detail, issue/renew/replace/rebind/suspend/revoke flows, `/licensing/verify` | Done    |
+| All other modules               | Routed placeholders that list each module's planned screens                                                       | Planned |
 
 ## Getting started
 
@@ -33,6 +34,8 @@ Pages worth opening:
 - `/` — portfolio command center. Try the filters, and Ctrl+K searches such as `customer:halden` or `deployment:prod`.
 - `/customers` — customer list with saved views, filter rail, column manager and bulk selection.
 - `/customers/cus_halden` — Customer 360 with explainable health, timeline and 13 sections.
+- `/licensing/LIC_00409` — license in grace; try Renew license, or `/licensing/LIC_00388/revoke` for the four-eyes revoke flow.
+- `/licensing/verify` — artifact integrity check with intact and tampered examples.
 - `/design-system` — tokens and components.
 
 | Command                                 | What it runs                                   |
