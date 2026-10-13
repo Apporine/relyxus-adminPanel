@@ -4,6 +4,7 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dialog as DialogPrimitive } from "radix-ui";
+import { Suspense } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import type { Environment } from "@/domain/types";
 import { cn } from "@/lib/cn";
@@ -20,12 +21,13 @@ function ApporineMark({ className }: { className?: string }) {
   );
 }
 
-function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
-  const pathname = usePathname();
+type NavListProps = { collapsed: boolean; onNavigate?: () => void };
+
+function NavItems({ collapsed, onNavigate, pathname }: NavListProps & { pathname: string | null }) {
   return (
     <ul className="flex flex-col gap-0.5">
       {primaryNavigation.map((item) => {
-        const active = isActivePath(pathname, item.href);
+        const active = pathname !== null && isActivePath(pathname, item.href);
         const link = (
           <Link
             href={item.href}
@@ -57,6 +59,22 @@ function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: (
         );
       })}
     </ul>
+  );
+}
+
+function ActiveNavItems(props: NavListProps) {
+  return <NavItems {...props} pathname={usePathname()} />;
+}
+
+/**
+ * On routes with request-time params the pathname is unknown while prerendering, so the
+ * active highlight streams in; the fallback renders the same links without it.
+ */
+function NavList(props: NavListProps) {
+  return (
+    <Suspense fallback={<NavItems {...props} pathname={null} />}>
+      <ActiveNavItems {...props} />
+    </Suspense>
   );
 }
 

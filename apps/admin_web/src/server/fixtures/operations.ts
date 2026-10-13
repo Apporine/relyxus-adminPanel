@@ -368,7 +368,7 @@ export const tasks: Task[] = [
   {
     id: "tsk_504",
     kind: "renewal",
-    title: "Halden Mutual renewal notice deadline in 2 days",
+    title: "Halden Mutual notice deadline passed; confirm renewal terms",
     priority: "high",
     customerId: "cus_halden",
     ownerId: "stf_02",
