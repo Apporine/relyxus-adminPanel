@@ -9,6 +9,7 @@ import {
   listTasks,
 } from "@/server/data";
 import { CommandPalette } from "./command-palette";
+import { NavigationProgress } from "./navigation-progress";
 import { ShellProvider } from "./shell-state";
 import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
@@ -27,6 +28,10 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ShellProvider>
+      {/* useSearchParams needs a Suspense boundary to keep the shell static. */}
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
       <a
         href="#main-content"
         className="sr-only z-(--z-palette) rounded-control bg-violet px-4 py-2 font-semibold text-white focus:not-sr-only focus:fixed focus:start-4 focus:top-4"

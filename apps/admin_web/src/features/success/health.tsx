@@ -8,8 +8,8 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldHint, Input, Label, Select, Textarea } from "@/components/ui/field";
-import { Skeleton } from "@/components/ui/feedback";
 import { PageHeader } from "@/components/ui/page-header";
+import { ContentSkeleton } from "@/components/ui/skeletons";
 import {
   Table,
   TableBody,
@@ -330,5 +330,5 @@ export async function CustomerHealthDetail({
 }
 
 export function SuccessSkeleton() {
-  return <Skeleton className="h-96 rounded-card" aria-busy="true" />;
+  return <ContentSkeleton label="success data" metrics={4} />;
 }

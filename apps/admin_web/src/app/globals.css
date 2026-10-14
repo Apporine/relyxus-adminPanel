@@ -239,6 +239,8 @@
   --animate-pop: ap-pop 240ms var(--ap-ease-emphasized) backwards;
   --animate-pop-out: ap-pop 140ms var(--ap-ease-standard) reverse forwards;
   --animate-drawer-in: ap-drawer 260ms var(--ap-ease-emphasized) backwards;
+  --animate-nav-progress: ap-nav-progress 8s cubic-bezier(0.1, 0.6, 0.2, 1) forwards;
+  --animate-nav-done: ap-nav-done 320ms var(--ap-ease-standard) forwards;
   --animate-reveal-x: ap-reveal-x 900ms var(--ap-ease-emphasized) backwards;
   --animate-shimmer: ap-shimmer 1.6s linear infinite;
   --animate-ping-soft: ap-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -262,6 +264,31 @@
   from {
     opacity: 0;
     transform: translateY(6px) scale(0.97);
+  }
+}
+
+/* Route change: trickles towards 85% while loading, then completes and fades. */
+@keyframes ap-nav-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 85%;
+  }
+}
+
+@keyframes ap-nav-done {
+  from {
+    width: 85%;
+    opacity: 1;
+  }
+  60% {
+    width: 100%;
+    opacity: 1;
+  }
+  to {
+    width: 100%;
+    opacity: 0;
   }
 }
 

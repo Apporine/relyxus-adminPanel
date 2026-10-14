@@ -5,9 +5,10 @@ import { EnvironmentBadge } from "@/components/shell/environment-badge";
 import { StatusBadge, Tag, type BadgeTone } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DescriptionList } from "@/components/ui/description-list";
-import { Notice, Skeleton } from "@/components/ui/feedback";
+import { Notice } from "@/components/ui/feedback";
 import { Field, Label, Textarea } from "@/components/ui/field";
 import { SegmentNav } from "@/components/ui/segment-nav";
+import { ContentSkeleton } from "@/components/ui/skeletons";
 import {
   Table,
   TableBody,
@@ -50,7 +51,7 @@ export function SettingsNav({ current }: { current: SettingsView }) {
 }
 
 export function SettingsSkeleton() {
-  return <Skeleton className="h-96 rounded-card" aria-busy="true" />;
+  return <ContentSkeleton label="settings" cards={2} table={false} />;
 }
 
 /** Changes here are configuration changes: reasoned, approved where policy says, audited. */
