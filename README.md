@@ -28,6 +28,7 @@ The project is in the **design track**: the Admin Web is built screen by screen 
 | Finance                         | `/analytics/finance` commercial summary, cost to serve with allocation views, margin estimate ranges, cost attribution                                                                                             | Done  |
 | Reports and data quality        | `/analytics` report library and `/analytics/reports/[id]`, report builder, saved views, scheduled reports; `/analytics/data-quality` checks, completeness, duplicates, source ownership, classification, retention | Done  |
 | Settings and operator assistant | `/settings` organization, identity, notifications and automation, integrations, data policy, environments; read-only operator assistant panel in the top bar                                                       | Done  |
+| Sign in                         | `/sign-in` email and password, `/sign-in/sso` single sign-on through Microsoft Entra ID; no self-service sign-up                                                                                                   | Done  |
 
 ## Getting started
 
