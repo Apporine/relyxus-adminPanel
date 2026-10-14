@@ -6,13 +6,18 @@ import { roundEstimate } from "@/domain/finance";
 import { formatMoneyCompact, formatTimestamp } from "@/lib/format";
 import type { FinanceData } from "./load";
 
-export type AnalyticsArea = "reports" | "finance";
+export type AnalyticsArea =
+  "reports" | "builder" | "views" | "schedules" | "finance" | "data-quality";
 
 /** Areas of the Analytics module. */
 export function AnalyticsNav({ current }: { current: AnalyticsArea }) {
   const items = [
-    { id: "reports", href: "/analytics", label: "Reports" },
+    { id: "reports", href: "/analytics", label: "Report library" },
+    { id: "builder", href: "/analytics/builder", label: "Report builder" },
+    { id: "views", href: "/analytics/saved-views", label: "Saved views" },
+    { id: "schedules", href: "/analytics/schedules", label: "Scheduled reports" },
     { id: "finance", href: "/analytics/finance", label: "Finance" },
+    { id: "data-quality", href: "/analytics/data-quality", label: "Data quality" },
   ];
   return (
     <SegmentNav

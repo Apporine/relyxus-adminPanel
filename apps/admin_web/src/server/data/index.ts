@@ -32,8 +32,11 @@ import type {
   OnboardingItem,
   Product,
   QbrRecord,
+  ReportDefinition,
+  ReportSchedule,
   Release,
   RiskEntry,
+  SavedView,
   SecuritySignalWeek,
   SensitiveAccessEvent,
   SigningKey,
@@ -54,6 +57,15 @@ import {
 } from "../fixtures/audit";
 import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
+import {
+  fieldClassifications,
+  incomingCrmRecords,
+  reports,
+  retentionRules,
+  savedViews,
+  schedules,
+  sourceOwnership,
+} from "../fixtures/reports";
 import {
   cloudCostLines,
   COST_MONTH,
@@ -314,6 +326,34 @@ export async function getFinanceInputs(): Promise<{
     labor: laborRates,
     fx: fxRates,
     sources: costSources,
+  };
+}
+
+// Analytics and governance -------------------------------------------------------------------
+
+export async function listReports(): Promise<ReportDefinition[]> {
+  return reports;
+}
+
+export async function getReport(id: string): Promise<ReportDefinition | undefined> {
+  return reports.find((r) => r.id === id);
+}
+
+export async function listSavedViews(): Promise<SavedView[]> {
+  return savedViews;
+}
+
+export async function listReportSchedules(): Promise<ReportSchedule[]> {
+  return schedules;
+}
+
+/** Data governance reference: source ownership, classification, retention (spec §27). */
+export async function getGovernance() {
+  return {
+    incoming: incomingCrmRecords,
+    ownership: sourceOwnership,
+    classifications: fieldClassifications,
+    retention: retentionRules,
   };
 }
 

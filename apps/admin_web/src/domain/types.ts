@@ -813,3 +813,90 @@ export interface CostSource {
   state: "current" | "delayed" | "unavailable";
   lastSyncedAt: Iso;
 }
+
+// Analytics and reports (spec §26) --------------------------------------------------------
+
+export type ReportFamily =
+  | "portfolio"
+  | "commercial"
+  | "licensing"
+  | "deployment"
+  | "success"
+  | "support"
+  | "finance"
+  | "security"
+  | "audit";
+
+export type DatasetKey =
+  | "customers"
+  | "contracts"
+  | "licenses"
+  | "deployments"
+  | "support_cases"
+  | "staff_access"
+  | "audit_events";
+
+/** Exact "any of" for saved reports; "contains" for free text in the builder. */
+export type ReportFilter = { field: string; anyOf: string[] } | { field: string; contains: string };
+
+/** Saved report over an approved dataset: fields, filter and sort (spec §26). */
+export interface ReportDefinition {
+  id: string;
+  title: string;
+  family: ReportFamily;
+  description: string;
+  dataset: DatasetKey;
+  columns: string[];
+  /** Rows whose field equals any of the values (case-insensitive). */
+  filter?: ReportFilter;
+  sort?: { field: string; direction: "ascending" | "descending" };
+  ownerId: string;
+  visibility: "private" | "team";
+  updatedAt: Iso;
+}
+
+/** Saved view of a module screen: filters, columns, sort and scope in its URL. */
+export interface SavedView {
+  id: string;
+  name: string;
+  module: string;
+  href: string;
+  summary: string;
+  ownerId: string;
+  visibility: "private" | "team";
+  updatedAt: Iso;
+}
+
+export interface ReportSchedule {
+  id: string;
+  reportId: string;
+  cadence: string;
+  recipientIds: string[];
+  format: "PDF" | "CSV";
+  nextRunAt: Iso;
+  /** Restricted fields are removed before delivery (spec §26: sensitive data minimized). */
+  minimized: boolean;
+  lastRun?: { at: Iso; status: "delivered" | "failed" | "skipped"; note?: string };
+  paused?: boolean;
+}
+
+// Data governance (spec §27) --------------------------------------------------------------
+
+export interface SourceOwnership {
+  field: string;
+  object: string;
+  system: string;
+  rule: string;
+}
+
+export interface FieldClassification {
+  field: string;
+  object: string;
+  label: "Internal" | "Confidential" | "Restricted";
+}
+
+export interface RetentionRule {
+  record: string;
+  period: string;
+  basis: string;
+}
