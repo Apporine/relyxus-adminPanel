@@ -1,7 +1,7 @@
 import { FilterFrame } from "@/components/filters/filter-frame";
 import { StatusBadge, type BadgeTone } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/feedback";
 import { SegmentNav } from "@/components/ui/segment-nav";
+import { ContentSkeleton } from "@/components/ui/skeletons";
 import { auditCategoryLabel, auditFilterParams, type AuditFilters } from "@/domain/audit";
 import type { AuditResult } from "@/domain/types";
 import { loadAudit, type AuditData } from "./load";
@@ -30,7 +30,7 @@ export function AuditNav({ current, filters }: { current: AuditView; filters?: A
 }
 
 export function AuditSkeleton() {
-  return <Skeleton className="h-96 rounded-card" aria-busy="true" />;
+  return <ContentSkeleton label="audit events" charts={1} columns={8} />;
 }
 
 const resultPresentation: Record<AuditResult, { label: string; tone: BadgeTone }> = {

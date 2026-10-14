@@ -237,10 +237,6 @@ export async function listAuditEvents(customerId?: string): Promise<AuditEvent[]
   return customerId ? auditEvents.filter((e) => e.customerId === customerId) : auditEvents;
 }
 
-export async function getAuditEvent(id: string): Promise<AuditEvent | undefined> {
-  return auditEvents.find((e) => e.id === id);
-}
-
 /** SIEM stream delivery state (spec §24). */
 export async function getAuditStream(): Promise<AuditStreamStatus> {
   return auditStream;

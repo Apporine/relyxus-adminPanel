@@ -1,6 +1,6 @@
 import { StatusBadge, type BadgeTone } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/feedback";
 import { SegmentNav } from "@/components/ui/segment-nav";
+import { ContentSkeleton } from "@/components/ui/skeletons";
 import type {
   CredentialStatus,
   FindingSeverity,
@@ -35,7 +35,7 @@ export function SecurityNav({ current }: { current: SecurityView }) {
 }
 
 export function SecuritySkeleton() {
-  return <Skeleton className="h-96 rounded-card" aria-busy="true" />;
+  return <ContentSkeleton label="security data" metrics={4} columns={7} />;
 }
 
 type Presentation = { label: string; tone: BadgeTone };

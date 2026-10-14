@@ -1,7 +1,8 @@
 import { Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { EmptyState, Notice, Skeleton } from "@/components/ui/feedback";
+import { EmptyState, Notice } from "@/components/ui/feedback";
 import { SegmentNav } from "@/components/ui/segment-nav";
+import { ContentSkeleton } from "@/components/ui/skeletons";
 import { roundEstimate } from "@/domain/finance";
 import { formatMoneyCompact, formatTimestamp } from "@/lib/format";
 import type { FinanceData } from "./load";
@@ -45,7 +46,7 @@ export function FinanceNav({ current, query = "" }: { current: FinanceView; quer
 }
 
 export function FinanceSkeleton() {
-  return <Skeleton className="h-96 rounded-card" aria-busy="true" />;
+  return <ContentSkeleton label="analytics data" metrics={4} columns={6} />;
 }
 
 /** Finance and Executive roles only (spec §30); others see why, not a misleading zero. */
