@@ -187,12 +187,15 @@ export function TopBar({
   tasks,
   staff,
   products,
+  assistant,
 }: {
   environment: Environment;
   pendingApprovals: number;
   tasks: Task[];
   staff: StaffUser;
   products: Product[];
+  /** Operator assistant launcher, rendered by the server with the viewer's records. */
+  assistant?: React.ReactNode;
 }) {
   const { setMobileNavOpen } = useShell();
   return (
@@ -218,6 +221,7 @@ export function TopBar({
           <span>pending</span>
           <span className="sr-only">approvals</span>
         </Link>
+        {assistant}
         <Notifications tasks={tasks} />
         <Help />
         <StaffMenu staff={staff} />

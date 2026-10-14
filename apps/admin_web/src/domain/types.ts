@@ -900,3 +900,63 @@ export interface RetentionRule {
   period: string;
   basis: string;
 }
+
+// Settings (spec §25, §28) -----------------------------------------------------------------
+
+export interface AutomationRule {
+  id: string;
+  trigger: string;
+  action: string;
+  ownerId: string;
+  scope: string;
+  enabled: boolean;
+  testMode: boolean;
+  channels: ("in_app" | "email" | "teams")[];
+  lastRunAt?: Iso;
+  lastAuditId?: string;
+}
+
+export interface NotificationChannel {
+  id: string;
+  kind: "in_app" | "email" | "teams";
+  name: string;
+  destination: string;
+  state: "active" | "disabled";
+  approvedById: string;
+}
+
+export interface Integration {
+  id: string;
+  name: string;
+  integrationClass:
+    | "Identity"
+    | "CRM"
+    | "Finance"
+    | "Support"
+    | "Collaboration"
+    | "AWS cost"
+    | "Source and release"
+    | "SIEM";
+  system: string;
+  ownerId: string;
+  purpose: string;
+  scopes: string[];
+  /** Reference to the secret in the secrets manager; never the secret itself. */
+  credentialsRef: string;
+  dataClasses: string[];
+  direction: "inbound" | "outbound" | "both";
+  state: "healthy" | "degraded" | "failing" | "disabled";
+  lastSuccessAt?: Iso;
+  lastFailureAt?: Iso;
+  lastFailure?: string;
+}
+
+export interface EnvironmentConfig {
+  key: Environment;
+  url: string;
+  region: string;
+  version: string;
+  data: string;
+  access: string;
+  deployedAt: Iso;
+}

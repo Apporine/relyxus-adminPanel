@@ -58,6 +58,14 @@ import {
 import { contracts, deployments, licenses } from "../fixtures/commercial";
 import { contacts, customers } from "../fixtures/customers";
 import {
+  automationRules,
+  environments,
+  identity,
+  integrations,
+  notificationChannels,
+  organization,
+} from "../fixtures/settings";
+import {
   fieldClassifications,
   incomingCrmRecords,
   reports,
@@ -354,6 +362,20 @@ export async function getGovernance() {
     ownership: sourceOwnership,
     classifications: fieldClassifications,
     retention: retentionRules,
+  };
+}
+
+// Settings -------------------------------------------------------------------------------------
+
+/** Control plane configuration (spec §25, §28); secrets appear only as references. */
+export async function getSettings() {
+  return {
+    organization,
+    identity,
+    channels: notificationChannels,
+    automations: automationRules,
+    integrations,
+    environments,
   };
 }
 
