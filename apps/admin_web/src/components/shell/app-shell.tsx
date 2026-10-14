@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { Assistant } from "@/features/assistant/assistant";
 import {
   getCurrentStaff,
   getEnvironment,
@@ -46,6 +48,11 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
             tasks={tasks}
             staff={staff}
             products={products}
+            assistant={
+              <Suspense fallback={null}>
+                <Assistant />
+              </Suspense>
+            }
           />
           <main
             id="main-content"
