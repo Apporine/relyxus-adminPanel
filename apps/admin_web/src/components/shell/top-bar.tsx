@@ -170,10 +170,11 @@ function StaffMenu({ staff }: { staff: StaffUser }) {
               Design system
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Item disabled className={itemClass}>
-            <LogOut aria-hidden="true" />
-            Sign out
-            <span className="ms-auto text-micro">Identity not connected</span>
+          <DropdownMenu.Item asChild className={itemClass}>
+            <Link href="/sign-in">
+              <LogOut aria-hidden="true" />
+              Sign out
+            </Link>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
