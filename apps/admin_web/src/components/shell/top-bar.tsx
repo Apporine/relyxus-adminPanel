@@ -3,9 +3,11 @@
 import { Bell, CircleHelp, LogOut, Menu, Palette, Search, Stamp } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, Popover } from "radix-ui";
+import { useTransition } from "react";
 import { Kbd } from "@/components/ui/feedback";
 import { Select } from "@/components/ui/field";
 import { priority as priorityPresentation, roleName } from "@/domain/status";
+import { signOut } from "@/features/auth/actions";
 import type { Environment, Product, StaffUser, Task } from "@/domain/types";
 import { cn } from "@/lib/cn";
 import { EnvironmentBadge } from "./environment-badge";
@@ -144,6 +146,7 @@ function Help() {
 }
 
 function StaffMenu({ staff }: { staff: StaffUser }) {
+  const [, startTransition] = useTransition();
   const itemClass =
     "flex h-9 cursor-default items-center gap-2.5 rounded-control px-2.5 text-dense text-fg outline-none data-disabled:text-fg-disabled data-highlighted:bg-surface-hover [&_svg]:size-4 [&_svg]:text-fg-muted";
   return (
@@ -170,11 +173,13 @@ function StaffMenu({ staff }: { staff: StaffUser }) {
               Design system
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Item asChild className={itemClass}>
-            <Link href="/sign-in">
-              <LogOut aria-hidden="true" />
-              Sign out
-            </Link>
+          {/* Called directly: the menu unmounts on select, before a form could submit. */}
+          <DropdownMenu.Item
+            className={itemClass}
+            onSelect={() => startTransition(() => signOut())}
+          >
+            <LogOut aria-hidden="true" />
+            Sign out
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

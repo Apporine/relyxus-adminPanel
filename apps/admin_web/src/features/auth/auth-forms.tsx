@@ -1,12 +1,14 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Building2, Eye, EyeOff, LogIn } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Eye, EyeOff, LoaderCircle, LogIn } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRef, useState, useTransition } from "react";
 import { ApporineMark } from "@/components/shell/apporine-mark";
 import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/feedback";
 import { Field, FieldError, FieldHint, Input, Label } from "@/components/ui/field";
+import { startPreviewSession } from "./actions";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -27,20 +29,35 @@ function AuthHeading({ title, description }: { title: string; description: strin
   );
 }
 
-/** Design-track outcome: the form validates, then says plainly that nothing was sent. */
-function NotConnected({ action }: { action: string }) {
+/**
+ * Starts the session and opens the page that sent the user here. Only the destination
+ * goes to the server; credentials stay in the browser in the design track.
+ */
+function useSignIn() {
+  const next = useSearchParams().get("next") ?? "/";
+  const [pending, startTransition] = useTransition();
+  return {
+    next,
+    pending,
+    signIn: () => startTransition(() => startPreviewSession(next)),
+  };
+}
+
+/** Design-track honesty: say plainly that no credentials are checked. */
+function PreviewNote() {
   return (
-    <div className="flex flex-col gap-4" aria-live="polite">
-      <Notice title="Identity provider not connected">
-        {action} is a design preview. No credentials were sent or stored.
-      </Notice>
-      <Button asChild variant="primary" className="w-full">
-        <Link href="/">
-          Continue to the console preview
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      </Button>
-    </div>
+    <Notice title="Design preview" className="mb-6">
+      Any valid email opens a preview session. No credentials are checked, sent or stored.
+    </Notice>
+  );
+}
+
+function Pending({ label }: { label: string }) {
+  return (
+    <>
+      <LoaderCircle aria-hidden="true" className="animate-spin" />
+      {label}
+    </>
   );
 }
 
@@ -67,7 +84,7 @@ function Divider() {
 export function SignInForm() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const { next: nextPage, pending, signIn } = useSignIn();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +100,7 @@ export function SignInForm() {
     setErrors(next);
     if (next.email) emailRef.current?.focus();
     else if (next.password) passwordRef.current?.focus();
-    else setSubmitted(true);
+    else signIn();
   }
 
   return (
@@ -92,76 +109,83 @@ export function SignInForm() {
         title="Sign in"
         description="Use your Apporine work account to open the control plane."
       />
-      {submitted ? (
-        <NotConnected action="Signing in" />
-      ) : (
-        <>
-          <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4" aria-label="Sign in">
-            <Field>
-              <Label htmlFor="sign-in-email">Work email</Label>
+      <PreviewNote />
+      <>
+        <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4" aria-label="Sign in">
+          <Field>
+            <Label htmlFor="sign-in-email">Work email</Label>
+            <Input
+              ref={emailRef}
+              id="sign-in-email"
+              name="email"
+              type="email"
+              autoComplete="username"
+              inputMode="email"
+              required
+              aria-invalid={errors.email ? true : undefined}
+              aria-describedby={errors.email ? "sign-in-email-error" : undefined}
+            />
+            {errors.email ? <FieldError id="sign-in-email-error">{errors.email}</FieldError> : null}
+          </Field>
+          <Field>
+            <Label htmlFor="sign-in-password">Password</Label>
+            <div className="relative">
               <Input
-                ref={emailRef}
-                id="sign-in-email"
-                name="email"
-                type="email"
-                autoComplete="username"
-                inputMode="email"
+                ref={passwordRef}
+                id="sign-in-password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 required
-                aria-invalid={errors.email ? true : undefined}
-                aria-describedby={errors.email ? "sign-in-email-error" : undefined}
+                className="pe-10"
+                aria-invalid={errors.password ? true : undefined}
+                aria-describedby={errors.password ? "sign-in-password-error" : undefined}
               />
-              {errors.email ? (
-                <FieldError id="sign-in-email-error">{errors.email}</FieldError>
-              ) : null}
-            </Field>
-            <Field>
-              <Label htmlFor="sign-in-password">Password</Label>
-              <div className="relative">
-                <Input
-                  ref={passwordRef}
-                  id="sign-in-password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  className="pe-10"
-                  aria-invalid={errors.password ? true : undefined}
-                  aria-describedby={errors.password ? "sign-in-password-error" : undefined}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  aria-pressed={showPassword}
-                  className="absolute end-1 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-control text-fg-muted hover:bg-surface-hover hover:text-fg"
-                >
-                  {showPassword ? (
-                    <EyeOff aria-hidden="true" className="size-4" />
-                  ) : (
-                    <Eye aria-hidden="true" className="size-4" />
-                  )}
-                </button>
-              </div>
-              {errors.password ? (
-                <FieldError id="sign-in-password-error">{errors.password}</FieldError>
-              ) : (
-                <FieldHint>You will confirm with multi-factor authentication next.</FieldHint>
-              )}
-            </Field>
-            <Button type="submit" variant="primary" className="mt-2 w-full">
-              <LogIn aria-hidden="true" />
-              Sign in
-            </Button>
-          </form>
-          <Divider />
-          <Button asChild className="w-full">
-            <Link href="/sign-in/sso">
-              <Building2 aria-hidden="true" />
-              Sign in with SSO
-            </Link>
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                className="absolute end-1 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-control text-fg-muted hover:bg-surface-hover hover:text-fg"
+              >
+                {showPassword ? (
+                  <EyeOff aria-hidden="true" className="size-4" />
+                ) : (
+                  <Eye aria-hidden="true" className="size-4" />
+                )}
+              </button>
+            </div>
+            {errors.password ? (
+              <FieldError id="sign-in-password-error">{errors.password}</FieldError>
+            ) : (
+              <FieldHint>You will confirm with multi-factor authentication next.</FieldHint>
+            )}
+          </Field>
+          <Button type="submit" variant="primary" className="mt-2 w-full" disabled={pending}>
+            {pending ? (
+              <Pending label="Signing in" />
+            ) : (
+              <>
+                <LogIn aria-hidden="true" />
+                Sign in
+              </>
+            )}
           </Button>
-        </>
-      )}
+        </form>
+        <Divider />
+        <Button asChild className="w-full">
+          <Link
+            href={
+              nextPage === "/"
+                ? "/sign-in/sso"
+                : `/sign-in/sso?next=${encodeURIComponent(nextPage)}`
+            }
+          >
+            <Building2 aria-hidden="true" />
+            Sign in with SSO
+          </Link>
+        </Button>
+      </>
       <NoSignUp />
     </>
   );
@@ -170,7 +194,7 @@ export function SignInForm() {
 /** Single sign-on through the organization's identity provider. */
 export function SsoForm() {
   const [error, setError] = useState<string>();
-  const [submitted, setSubmitted] = useState(false);
+  const { next: nextPage, pending, signIn } = useSignIn();
   const emailRef = useRef<HTMLInputElement>(null);
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -183,7 +207,7 @@ export function SsoForm() {
         : undefined;
     setError(message);
     if (message) emailRef.current?.focus();
-    else setSubmitted(true);
+    else signIn();
   }
 
   return (
@@ -192,56 +216,59 @@ export function SsoForm() {
         title="Single sign-on"
         description={`Sign in through your organization's identity provider, ${PROVIDER}.`}
       />
-      {submitted ? (
-        <NotConnected action={`Redirecting to ${PROVIDER}`} />
-      ) : (
-        <>
-          <form
-            noValidate
-            onSubmit={onSubmit}
-            className="flex flex-col gap-4"
-            aria-label="Single sign-on"
-          >
-            <Field>
-              <Label htmlFor="sso-email">Work email</Label>
-              <Input
-                ref={emailRef}
-                id="sso-email"
-                name="email"
-                type="email"
-                autoComplete="username"
-                inputMode="email"
-                required
-                aria-invalid={error ? true : undefined}
-                aria-describedby={error ? "sso-email-error" : "sso-email-hint"}
-              />
-              {error ? (
-                <FieldError id="sso-email-error">{error}</FieldError>
-              ) : (
-                <FieldHint id="sso-email-hint">
-                  We use your email domain to find your organization&apos;s sign-in page.
-                </FieldHint>
-              )}
-            </Field>
-            <Button type="submit" variant="primary" className="mt-2 w-full">
-              Continue with SSO
-              <ArrowRight aria-hidden="true" />
-            </Button>
-          </form>
-          <Divider />
-          <Button className="w-full" onClick={() => setSubmitted(true)}>
-            <Building2 aria-hidden="true" />
-            Continue with {PROVIDER}
+      <PreviewNote />
+      <>
+        <form
+          noValidate
+          onSubmit={onSubmit}
+          className="flex flex-col gap-4"
+          aria-label="Single sign-on"
+        >
+          <Field>
+            <Label htmlFor="sso-email">Work email</Label>
+            <Input
+              ref={emailRef}
+              id="sso-email"
+              name="email"
+              type="email"
+              autoComplete="username"
+              inputMode="email"
+              required
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "sso-email-error" : "sso-email-hint"}
+            />
+            {error ? (
+              <FieldError id="sso-email-error">{error}</FieldError>
+            ) : (
+              <FieldHint id="sso-email-hint">
+                We use your email domain to find your organization&apos;s sign-in page.
+              </FieldHint>
+            )}
+          </Field>
+          <Button type="submit" variant="primary" className="mt-2 w-full" disabled={pending}>
+            {pending ? (
+              <Pending label={`Redirecting to ${PROVIDER}`} />
+            ) : (
+              <>
+                Continue with SSO
+                <ArrowRight aria-hidden="true" />
+              </>
+            )}
           </Button>
-          <Link
-            href="/sign-in"
-            className="mt-6 inline-flex items-center gap-1.5 text-dense font-medium text-violet-text hover:underline"
-          >
-            <ArrowLeft aria-hidden="true" className="size-4" />
-            Sign in with email and password
-          </Link>
-        </>
-      )}
+        </form>
+        <Divider />
+        <Button className="w-full" onClick={signIn} disabled={pending}>
+          <Building2 aria-hidden="true" />
+          Continue with {PROVIDER}
+        </Button>
+        <Link
+          href={nextPage === "/" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(nextPage)}`}
+          className="mt-6 inline-flex items-center gap-1.5 text-dense font-medium text-violet-text hover:underline"
+        >
+          <ArrowLeft aria-hidden="true" className="size-4" />
+          Sign in with email and password
+        </Link>
+      </>
       <NoSignUp />
     </>
   );
