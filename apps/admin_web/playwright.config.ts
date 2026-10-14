@@ -17,6 +17,22 @@ export default defineConfig({
     // Entrance animations fade content in; axe would measure contrast mid-fade. Motion
     // itself is covered by motion.spec.ts, which opts back in.
     contextOptions: { reducedMotion: "reduce" },
+    // Console pages need a session (src/proxy.ts); sign in tests opt out of it.
+    storageState: {
+      cookies: [
+        {
+          name: "apc_session",
+          value: "preview",
+          domain: "localhost",
+          path: "/",
+          expires: -1,
+          httpOnly: true,
+          secure: false,
+          sameSite: "Lax",
+        },
+      ],
+      origins: [],
+    },
   },
   projects: [
     {
